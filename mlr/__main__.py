@@ -18,6 +18,7 @@ def extract_fenced_code_blocks(md_text):
         md_text,
         flags=re.DOTALL,
     )
+    # If number of code blocks is not even
     if len(code_blocks) % 2 != 0:
         raise ValueError(
             "Replacement file must have an even number of fenced code blocks."
@@ -29,6 +30,9 @@ def extract_fenced_code_blocks(md_text):
 # text; this can be either two spaces, four spaces, or a tab character.
 def get_indent_unit(text):
     for indent_level in ((" " * 2), (" " * 4), "\t"):
+        # The positive lookahead is because since 2-space indent is really a
+        # subset of 4-space indent, we need to be able to distinguish between
+        # the two, so we check to see if there
         if re.search(rf"^{indent_level}(?=\S)", text, flags=re.MULTILINE):
             return indent_level
     return " " * 4
@@ -39,8 +43,10 @@ def get_indent_unit(text):
 # or a wildcard-match for only a single word)
 def evaluate_placeholder_vars(text):
     placeholder_evaluations = {
+        # Match all non-newline characters until the end of the line is reached
         "MATCH_ALL_BUT_NEWLINE": r"[^\n]*",
-        "MATCH_ALL_BUT_NEWLINE_LAZY": r"[^\n]*?"
+        # Match all non-newline characters between two delimiters (like quotes)
+        "MATCH_ALL_BUT_NEWLINE_LAZY": r"[^\n]*?",
     }
     for placeholder_var_name, replacement in placeholder_evaluations.items():
         text = re.sub(
@@ -56,16 +62,20 @@ def evaluate_placeholder_vars(text):
 def replace_text(input_text, target_text, replacement_text):
     replace_this_patt = "\n".join(
         (
+            # Evaluate special placeholder variables like MATCH_ALL_BUT_NEWLINE
             evaluate_placeholder_vars(rf"([ \t]*){re.escape(line.strip())}")
             if line
             else ""
         )
         for line in target_text.splitlines()
     )
+    # Retrieve the base indentation level in the target text to ensure that the
+    # replacement text is indented the same amount
     base_indent_matches = re.search(replace_this_patt, input_text)
     if not base_indent_matches:
         return input_text
     base_indent_level = base_indent_matches.group(1)
+    # Ensure that indentation is preserved in the replacement text
     replacement_text = re.sub(
         get_indent_unit(replacement_text),
         get_indent_unit(target_text),
@@ -102,9 +112,12 @@ def main():
     args = get_cli_args()
     for input_path in args.input_paths:
         input_text = input_path.read_text()
+        # Apply each replacement rule to each input file
         for rule_path in args.replacement:
             rule_text = rule_path.read_text()
             code_blocks = extract_fenced_code_blocks(rule_text)
+            # Enumerate fenced code blocks in pairs to get each pair of
+            # target/replacement rules
             for target_text, replacement_text in zip(
                 code_blocks[0::2], code_blocks[1::2]
             ):
