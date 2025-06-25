@@ -2,11 +2,14 @@
 import argparse
 import os
 import re
-from pathlib import PosixPath
+import sys
+from pathlib import PosixPath, WindowsPath
+
+BasePath = WindowsPath if sys.platform == "win32" else PosixPath
 
 
 # Path subclass that automatically expands the user' home directory (i.e. ~)
-class ExpandedPath(PosixPath):
+class ExpandedPath(BasePath):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, os.path.expanduser(*args), **kwargs)
 
