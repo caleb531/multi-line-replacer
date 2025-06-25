@@ -2,11 +2,11 @@
 import argparse
 import os
 import re
-from pathlib import Path
+from pathlib import PosixPath
 
 
 # Path subclass that automatically expands the user' home directory (i.e. ~)
-class ExpandedPath(Path):
+class ExpandedPath(PosixPath):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, os.path.expanduser(*args), **kwargs)
 
