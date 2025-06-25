@@ -16,7 +16,7 @@ from mlr.__main__ import main
 
 # The temporary working directory in which the tests can safely perform file
 # modifications
-temp_dir_path = os.path.join(tempfile.gettempdir(), "mlr-test-data")
+temp_dir_path = Path(tempfile.gettempdir()) / "mlr-test-data"
 # Subdirectories from anywhere in the project to copy to the temporary working
 # directory
 subdirs_to_copy = ("tests/input", "tests/output", "tests/rules")
@@ -31,7 +31,7 @@ class MLRTestCase(unittest.TestCase):
     def setUp(self):
         for subdir_path in subdirs_to_copy:
             subdir_name = os.path.basename(subdir_path)
-            temp_subdir_path = os.path.join(temp_dir_path, subdir_name)
+            temp_subdir_path = temp_dir_path / subdir_name
             with contextlib.suppress(OSError):
                 os.makedirs(temp_subdir_path)
                 shutil.copytree(subdir_path, temp_subdir_path, dirs_exist_ok=True)
@@ -42,35 +42,27 @@ class MLRTestCase(unittest.TestCase):
             shutil.rmtree(temp_dir_path)
 
     def get_input_path(self, input_filename):
-        return os.path.join(temp_dir_path, "input", input_filename)
+        return temp_dir_path / "input" / input_filename
 
     def get_rule_path(self, input_filename):
-        return os.path.join(temp_dir_path, "rules", input_filename)
+        return temp_dir_path / "rules" / input_filename
 
     def get_output_path(self, input_filename):
-        return os.path.join(temp_dir_path, "output", input_filename)
+        return temp_dir_path / "output" / input_filename
 
-    def assert_file_replace(self, *operations):
+    def assert_file_replace(self, input_filenames, rule_filenames, output_filenames):
         with patch(
             "sys.argv",
             [
                 __file__,
-                *(
-                    self.get_input_path(operation["input_filename"])
-                    for operation in operations
-                ),
+                *(str(self.get_input_path(f)) for f in input_filenames),
                 "-r",
-                *(
-                    self.get_rule_path(operation["rule_filename"])
-                    for operation in operations
-                ),
+                *(str(self.get_rule_path(f)) for f in rule_filenames),
             ],
         ):
             main()
-            for operation in operations:
+            for input_file, output_file in zip(input_filenames, output_filenames):
                 self.assertEqual(
-                    Path(
-                        self.get_output_path(operation["output_filename"])
-                    ).read_text(),
-                    Path(self.get_input_path(operation["input_filename"])).read_text(),
+                    self.get_output_path(output_file).read_text(),
+                    self.get_input_path(input_file).read_text(),
                 )
