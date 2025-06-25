@@ -23,6 +23,11 @@ subdirs_to_copy = ("tests/input", "tests/output", "tests/rules")
 
 
 class MLRTestCase(unittest.TestCase):
+    # Do not limit size of diffs (makes for easier debugging of failing tests)
+    maxDiff = None
+
+    # Before each test, create a temporary directory and copy the relevant test
+    # fixture files to it
     def setUp(self):
         for subdir_path in subdirs_to_copy:
             subdir_name = os.path.basename(subdir_path)
@@ -31,6 +36,7 @@ class MLRTestCase(unittest.TestCase):
                 os.makedirs(temp_subdir_path)
                 shutil.copytree(subdir_path, temp_subdir_path, dirs_exist_ok=True)
 
+    # After each test, remove the temporary test fixture directories
     def tearDown(self):
         with contextlib.suppress(OSError):
             shutil.rmtree(temp_dir_path)
@@ -63,8 +69,8 @@ class MLRTestCase(unittest.TestCase):
             main()
             for operation in operations:
                 self.assertEqual(
-                    Path(self.get_input_path(operation["input_filename"])).read_text(),
                     Path(
                         self.get_output_path(operation["output_filename"])
                     ).read_text(),
+                    Path(self.get_input_path(operation["input_filename"])).read_text(),
                 )
