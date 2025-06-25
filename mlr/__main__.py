@@ -44,9 +44,9 @@ def get_indent_unit(text):
 def evaluate_placeholder_vars(text):
     placeholder_evaluations = {
         # Match all non-newline characters until the end of the line is reached
-        "MATCH_ALL_BUT_NEWLINE": r"[^\n]*",
+        "MATCH_UNTIL_END_OF_LINE": r"[^\n]*",
         # Match all non-newline characters between two delimiters (like quotes)
-        "MATCH_ALL_BUT_NEWLINE_LAZY": r"[^\n]*?",
+        "MATCH_ALL_BETWEEN": r"[^\n]*?",
     }
     for placeholder_var_name, replacement in placeholder_evaluations.items():
         text = re.sub(
@@ -62,7 +62,7 @@ def evaluate_placeholder_vars(text):
 def replace_text(input_text, target_text, replacement_text):
     replace_this_patt = "\n".join(
         (
-            # Evaluate special placeholder variables like MATCH_ALL_BUT_NEWLINE
+            # Evaluate special placeholder variables like MATCH_UNTIL_END_OF_LINE
             evaluate_placeholder_vars(rf"([ \t]*){re.escape(line.strip())}")
             if line
             else ""

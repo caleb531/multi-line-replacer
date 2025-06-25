@@ -1,15 +1,15 @@
 ## pip (python version in a matrix)
 
 ```yml
-- name: MATCH_ALL_BUT_NEWLINE ${{ matrix.python-version }}
-  uses: actions/setup-python@MATCH_ALL_BUT_NEWLINE
+- name: MATCH_UNTIL_END_OF_LINE ${{ matrix.python-version }}
+  uses: actions/setup-python@MATCH_UNTIL_END_OF_LINE
   with:
     python-version: ${{ matrix.python-version }}
 
-- name: MATCH_ALL_BUT_NEWLINE
+- name: MATCH_UNTIL_END_OF_LINE
   run: |
-    MATCH_ALL_BUT_NEWLINE
-    MATCH_ALL_BUT_NEWLINE
+    MATCH_UNTIL_END_OF_LINE
+    MATCH_UNTIL_END_OF_LINE
 ```
 
 ## uv

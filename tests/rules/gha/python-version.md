@@ -1,7 +1,7 @@
 ## any python versions
 
 ```yml
-python-version: [MATCH_ALL_BUT_NEWLINE_LAZY]
+python-version: [MATCH_ALL_BETWEEN]
 ```
 
 ## supported python versions

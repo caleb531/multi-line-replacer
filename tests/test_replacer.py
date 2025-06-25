@@ -12,16 +12,16 @@ class TestMLR(MLRTestCase):
             output_filenames=["test.editorconfig"],
         )
 
-    def test_match_all_but_newline(self):
-        """should perform a replacement with MATCH_ALL_BUT_NEWLINE"""
+    def test_match_until_end_of_line(self):
+        """should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
             rule_filenames=["gha/ruff.md"],
             output_filenames=["lint-ruff.yml"],
         )
 
-    def test_match_all_but_newline_lazy(self):
-        """should perform a replacement with MATCH_ALL_BUT_NEWLINE_LAZY"""
+    def test_match_all_between(self):
+        """should perform a replacement with MATCH_ALL_BETWEEN"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
             rule_filenames=["gha/python-version.md"],

@@ -2,15 +2,15 @@
 
 ```yml
 - name: Publish distribution to Test PyPI
-  uses: pypa/gh-action-pypi-publish@release/MATCH_ALL_BUT_NEWLINE
+  uses: pypa/gh-action-pypi-publish@release/MATCH_UNTIL_END_OF_LINE
   with:
-    MATCH_ALL_BUT_NEWLINE
+    MATCH_UNTIL_END_OF_LINE
     attestations: false
 
 - name: Publish distribution to PyPI
-  uses: pypa/gh-action-pypi-publish@release/MATCH_ALL_BUT_NEWLINE
+  uses: pypa/gh-action-pypi-publish@release/MATCH_UNTIL_END_OF_LINE
   with:
-    MATCH_ALL_BUT_NEWLINE
+    MATCH_UNTIL_END_OF_LINE
 ```
 
 ## uv publish
