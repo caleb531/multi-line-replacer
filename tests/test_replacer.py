@@ -12,6 +12,17 @@ class TestMLR(MLRTestCase):
             output_filenames=["test.editorconfig"],
         )
 
+    def test_literal_target_misindented(self):
+        """
+        Should perform a literal textual replacement even if target text is
+        misindented
+        """
+        self.assert_file_replace(
+            input_filenames=["test.editorconfig"],
+            rule_filenames=["editorconfig-misindented.md"],
+            output_filenames=["test.editorconfig"],
+        )
+
     def test_match_until_end_of_line(self):
         """should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
         self.assert_file_replace(
