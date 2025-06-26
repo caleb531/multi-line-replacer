@@ -38,3 +38,14 @@ class TestMLR(MLRTestCase):
             rule_filenames=["gha/python-version.md"],
             output_filenames=["lint-python-version.yml"],
         )
+
+    def test_normalize_indent_unit_in_replacement(self):
+        """
+        Should normalize indent unit in replacement to match indent unit of
+        input text
+        """
+        self.assert_file_replace(
+            input_filenames=["lint.yml"],
+            rule_filenames=["gha/ruff-tab-indent.md"],
+            output_filenames=["lint-ruff.yml"],
+        )
