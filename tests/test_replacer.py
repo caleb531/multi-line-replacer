@@ -24,7 +24,7 @@ class TestMLR(MLRTestCase):
         )
 
     def test_match_until_end_of_line(self):
-        """should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
+        """Should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
             rule_filenames=["gha/ruff.md"],
@@ -32,7 +32,7 @@ class TestMLR(MLRTestCase):
         )
 
     def test_match_all_between(self):
-        """should perform a replacement with MATCH_ALL_BETWEEN"""
+        """Should perform a replacement with MATCH_ALL_BETWEEN"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
             rule_filenames=["gha/python-version.md"],
