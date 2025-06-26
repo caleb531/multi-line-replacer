@@ -5,6 +5,8 @@ import re
 import sys
 from pathlib import PosixPath, WindowsPath
 
+# Detect proper Path subclass to inherit from based on the user's platform,
+# since the top-level Path subclass is not designed to be subclassed directly
 BasePath = WindowsPath if sys.platform == "win32" else PosixPath
 
 
