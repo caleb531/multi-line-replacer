@@ -78,7 +78,15 @@ def replace_text(input_text, target_text, replacement_text):
     if not base_indent_matches:
         return input_text
     base_indent_level = base_indent_matches.group(1)
+    # Ensure that the replacement text's preferred indentation unit matches that
+    # of the input text
     replacement_indent_unit = get_indent_unit(replacement_text)
+    if replacement_indent_unit:
+        replacement_text = re.sub(
+            replacement_indent_unit,
+            get_indent_unit(input_text),
+            replacement_text,
+        )
     # Ensure that the replacement text is indented to the same amount as the
     # target text it is replacing
     replacement_text = "\n".join(
@@ -87,14 +95,6 @@ def replace_text(input_text, target_text, replacement_text):
         base_indent_level + line if line else ""
         for line in replacement_text.splitlines()
     )
-    # Ensure that the replacement text's preferred indentation unit matches that
-    # of the input text
-    if replacement_indent_unit:
-        replacement_text = re.sub(
-            replacement_indent_unit,
-            get_indent_unit(input_text),
-            replacement_text,
-        )
     input_text = re.sub(replace_this_patt, replacement_text, input_text)
     return input_text
 
