@@ -43,9 +43,9 @@ def get_indent_unit(text):
     return None
 
 
-# Evaluate textual placeholder variables in the given target text to
-# achieve certain behaviors (like wildcard-matching through the end of a line,
-# or a wildcard-match for only a single word)
+# Evaluate textual placeholder variables in the given target text to achieve
+# certain behaviors (like wildcard-matching through the end of a line, or a
+# wildcard-match for only a single word)
 def evaluate_placeholder_vars(text):
     placeholder_evaluations = {
         # Match all non-newline characters until the end of the line is reached
@@ -67,7 +67,8 @@ def evaluate_placeholder_vars(text):
 def replace_text(input_text, target_text, replacement_text):
     replace_this_patt = "\n".join(
         (
-            # Evaluate special placeholder variables like MATCH_UNTIL_END_OF_LINE
+            # Evaluate special placeholder variables like
+            # MATCH_UNTIL_END_OF_LINE
             evaluate_placeholder_vars(rf"([ \t]*){re.escape(line.strip())}")
             if line
             else ""
