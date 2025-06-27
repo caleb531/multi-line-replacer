@@ -6,6 +6,7 @@ import os.path
 import shutil
 import tempfile
 import unittest
+from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
@@ -41,15 +42,21 @@ class MLRTestCase(unittest.TestCase):
     def get_fixture_path(self, subpath):
         return temp_dir_path / subpath
 
-    def assert_file_replace(self, input_filenames, rule_filenames, output_filenames):
-        with patch(
-            "sys.argv",
-            [
-                __file__,
-                *(str(self.get_fixture_path(f)) for f in input_filenames),
-                "-r",
-                *(str(self.get_fixture_path(f)) for f in rule_filenames),
-            ],
+    def assert_file_replace(
+        self, input_filenames, rule_filenames, output_filenames, expected_cli_message
+    ):
+        out = StringIO()
+        with (
+            patch(
+                "sys.argv",
+                [
+                    __file__,
+                    *(str(self.get_fixture_path(f)) for f in input_filenames),
+                    "-r",
+                    *(str(self.get_fixture_path(f)) for f in rule_filenames),
+                ],
+            ),
+            contextlib.redirect_stdout(out),
         ):
             main()
             for input_file, output_file in zip(input_filenames, output_filenames):
@@ -57,3 +64,4 @@ class MLRTestCase(unittest.TestCase):
                     self.get_fixture_path(output_file).read_text(),
                     self.get_fixture_path(input_file).read_text(),
                 )
+            self.assertEqual(expected_cli_message, out.getvalue().strip())
