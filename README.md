@@ -16,20 +16,36 @@ The workflow takes one or more files on which to run replacements, and then a
 series of "replacement rule" files with the `-r` flag:
 
 ```sh
-mlr .github/workflows/*.yml -r my-replacement-rule.md
+mlr .github/workflows/*.yml -r example-rules/uv-gha.md
 ```
 
 Each replacement rule must be a Markdown file with one or more pairs of GFM
 fenced code blocks ([see documentation][gfm-docs]). Every odd code block
 represents the target text to replace, and every even code block represents the
-textual replacement. Please see 
+textual replacement. All other Markdown formatting is ignored, so feel free to
+add headings, explainer text, or anything else!
+
+````md
+This rule replaces flake8 with ruff in a Github Actions linting workflow.
+
+## flake8
+
+```yml
+- name: Run flake8
+  run: flake8 MATCH_UNTIL_END_OF_LINE
+```
+
+## ruff
+
+```yml
+- name: Run ruff
+  run: |
+    uv run ruff check .
+    uv run ruff format --check .
+```
+````
+
+To better understand the expected rules format and what's allowed, please see
+the `example-rules` directory.
 
 [gfm-docs]: https://github.github.com/gfm/#fenced-code-blocks
-
-### Example
-
-The following example makes a series of replacements to a series of GitHub Action workflows written in YAML.
-
-```sh
-mlr .github/workflows/*.yml -r 
-```
