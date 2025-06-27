@@ -4,6 +4,8 @@ from tests.utils import MLRTestCase
 
 
 class TestMLR(MLRTestCase):
+    """Test all multi-line-replacer (mlr) functionality"""
+
     def test_literal_replacement(self):
         """Should perform a literal textual replacement"""
         self.assert_file_replace(
