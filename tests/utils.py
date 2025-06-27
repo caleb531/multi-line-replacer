@@ -21,12 +21,19 @@ subdirs_to_copy = ("tests/input", "tests/output", "tests/rules")
 
 
 class MLRTestCase(unittest.TestCase):
+    """
+    A subclass of unittest.TestCase that provides additional behavior and
+    assertions specific to the multi-line-replacer package
+    """
+
     # Do not limit size of diffs (makes for easier debugging of failing tests)
     maxDiff = None
 
-    # Before each test, create a temporary directory and copy the relevant test
-    # fixture files to it
     def setUp(self):
+        """
+        Before each test, create a temporary directory and copy the relevant
+        test fixture files to it
+        """
         for subdir_path in subdirs_to_copy:
             subdir_name = os.path.basename(subdir_path)
             temp_subdir_path = temp_dir_path / subdir_name
@@ -34,13 +41,17 @@ class MLRTestCase(unittest.TestCase):
                 os.makedirs(temp_subdir_path)
                 shutil.copytree(subdir_path, temp_subdir_path, dirs_exist_ok=True)
 
-    # After each test, remove the temporary test fixture directories
     def tearDown(self):
+        """After each test, remove the temporary test fixture directories"""
         with contextlib.suppress(OSError):
             shutil.rmtree(temp_dir_path)
 
-    def get_fixture_path(self, subpath):
-        return temp_dir_path / subpath
+    def get_fixture_path(self, file_path):
+        """
+        Return a Path object representing the given file path relative to the
+        temporary test data directory
+        """
+        return temp_dir_path / file_path
 
     def assert_file_replace(
         self,
@@ -49,6 +60,10 @@ class MLRTestCase(unittest.TestCase):
         output_filenames,
         expected_cli_message=None,
     ):
+        """
+        A custom assertion that runs the CLI program with the specified
+        parameters, and optionally checks the summary message from stdout
+        """
         out = StringIO()
         with (
             patch(
