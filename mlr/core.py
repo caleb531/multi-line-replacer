@@ -61,7 +61,7 @@ def evaluate_placeholder_vars(text):
     }
     for placeholder_var_name, replacement in placeholder_evaluations.items():
         text = re.sub(
-            rf"\b{re.escape(placeholder_var_name)}\b",
+            re.escape(placeholder_var_name),
             replacement,
             text,
         )
