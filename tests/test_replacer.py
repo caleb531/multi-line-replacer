@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from tests import MLRTestCase
+from tests.core import MLRTestCase
 
 
 class TestMLR(MLRTestCase):
