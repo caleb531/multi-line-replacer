@@ -43,7 +43,11 @@ class MLRTestCase(unittest.TestCase):
         return temp_dir_path / subpath
 
     def assert_file_replace(
-        self, input_filenames, rule_filenames, output_filenames, expected_cli_message
+        self,
+        input_filenames,
+        rule_filenames,
+        output_filenames,
+        expected_cli_message=None,
     ):
         out = StringIO()
         with (
@@ -64,4 +68,5 @@ class MLRTestCase(unittest.TestCase):
                     self.get_fixture_path(output_file).read_text(),
                     self.get_fixture_path(input_file).read_text(),
                 )
-            self.assertEqual(expected_cli_message, out.getvalue().strip())
+            if expected_cli_message:
+                self.assertEqual(expected_cli_message, out.getvalue().strip())

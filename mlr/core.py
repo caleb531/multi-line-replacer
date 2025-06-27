@@ -24,7 +24,7 @@ def extract_fenced_code_blocks(md_text):
     )
     # If number of code blocks is not even
     if len(code_blocks) % 2 != 0:
-        raise ValueError(
+        raise RuntimeError(
             "Replacement file must have an even number of fenced code blocks."
         )
     return code_blocks

@@ -65,3 +65,14 @@ class TestMLR(MLRTestCase):
             output_filenames=["input/publish.yml"],
             expected_cli_message="1 file unchanged (no replacements made)",
         )
+
+    def test_missing_code_blocks(self):
+        """
+        Should raise a RuntimeError if there are an odd number of code blocks
+        """
+        with self.assertRaises(RuntimeError):
+            self.assert_file_replace(
+                input_filenames=["input/publish.yml"],
+                rule_filenames=["rules/missing-code-blocks.md"],
+                output_filenames=["input/publish.yml"],
+            )
