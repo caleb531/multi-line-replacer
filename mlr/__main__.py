@@ -37,6 +37,7 @@ def get_cli_args():
 
 
 def main():
+    """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
     total_replacement_count = 0
     total_files_changed = 0
