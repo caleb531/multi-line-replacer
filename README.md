@@ -49,6 +49,17 @@ The language specifier at the start of each code fence is ignored by the
 utility. Still, it is highly recommended to specify so that syntax highlighting
 is enabled in your editor (for a better authoring experience).
 
+### Wildcard Matching
+
+There are two special placeholder variables:
+
+- `MATCH_UNTIL_END_OF_LINE` (`[^\n]*`)
+- `MATCH_ALL_BETWEEN` (`[^\n]*?`)
+
+These variables can be used anywhere in a rule (no word boundaries required).
+
+### More Examples
+
 To better understand the expected rules format and what's allowed, please see
 the `example-rules` directory.
 
