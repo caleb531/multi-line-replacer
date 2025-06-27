@@ -9,14 +9,17 @@ from pathlib import PosixPath, WindowsPath
 BasePath = WindowsPath if sys.platform == "win32" else PosixPath
 
 
-# Path subclass that automatically expands the user' home directory (i.e. ~)
 class ExpandedPath(BasePath):
+    """
+    Path subclass that automatically expands the user' home directory (i.e. ~)
+    """
+
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, os.path.expanduser(*args), **kwargs)
 
 
-# Extract fenced code blocks from Markdown
-def extract_fenced_code_blocks(md_text):
+def extract_code_blocks(md_text):
+    """Extract fenced code blocks from the given Markdown text"""
     code_blocks = re.findall(
         r"```(?:[\w\-]*)\n(.*?)\n```",
         md_text,
@@ -30,9 +33,11 @@ def extract_fenced_code_blocks(md_text):
     return code_blocks
 
 
-# Find the string representing the base unit of indentation in a given string of
-# text; this can be either two spaces, four spaces, or a tab character.
 def get_indent_unit(text):
+    """
+    Find the string representing the base unit of indentation in a given string
+    of text; this can be either two spaces, four spaces, or a tab character.
+    """
     for indent_level in ((" " * 2), (" " * 4), "\t"):
         # The positive lookahead is because since 2-space indent is really a
         # subset of 4-space indent, we need to be able to distinguish between
@@ -42,10 +47,12 @@ def get_indent_unit(text):
     return None
 
 
-# Evaluate textual placeholder variables in the given target text to achieve
-# certain behaviors (like wildcard-matching through the end of a line, or a
-# wildcard-match for only a single word)
 def evaluate_placeholder_vars(text):
+    """
+    Evaluate textual placeholder variables in the given target text to achieve
+    certain behaviors (like wildcard-matching through the end of a line, or a
+    wildcard-match for only a single word)
+    """
     placeholder_evaluations = {
         # Match all non-newline characters until the end of the line is reached
         "MATCH_UNTIL_END_OF_LINE": r"[^\n]*",
@@ -61,9 +68,11 @@ def evaluate_placeholder_vars(text):
     return text
 
 
-# Replace the given text in the input text with the replacement text, preserving
-# indentation
 def replace_text(input_text, target_text, replacement_text):
+    """
+    Replace the given text in the input text with the replacement text,
+    preserving indentation
+    """
     replace_this_patt = "\n".join(
         (
             # Evaluate special placeholder variables like

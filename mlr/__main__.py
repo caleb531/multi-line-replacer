@@ -2,20 +2,22 @@
 
 import argparse
 
-from mlr.core import ExpandedPath, extract_fenced_code_blocks, replace_text
+from mlr.core import ExpandedPath, extract_code_blocks, replace_text
 
 
-# Return "1 file" or "<count> files", where the noun is either singular or
-# plural depending on the supplied count
 def pluralize(singular, plural, count):
+    """
+    Return "1 <singular>" or "<count> <plural>", where the noun is either in
+    singular or plural form depending on the supplied count
+    """
     if count == 1:
         return f"{count} {singular}"
     else:
         return f"{count} {plural}"
 
 
-# Define and parse CLI arguments
 def get_cli_args():
+    """Define and parse CLI arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "input_paths",
@@ -43,7 +45,7 @@ def main():
         # Apply each replacement rule to each input file
         for rule_path in args.replacement:
             rule_text = rule_path.read_text()
-            code_blocks = extract_fenced_code_blocks(rule_text)
+            code_blocks = extract_code_blocks(rule_text)
             # Enumerate fenced code blocks in pairs to get each pair of
             # target/replacement rules
             for target_text, replacement_text in zip(
