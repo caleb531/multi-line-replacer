@@ -27,7 +27,7 @@ class TestMLR(MLRTestCase):
         """Should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
-            rule_filenames=["gha/ruff.md"],
+            rule_filenames=["ruff.md"],
             output_filenames=["lint-ruff.yml"],
         )
 
@@ -35,7 +35,7 @@ class TestMLR(MLRTestCase):
         """Should perform a replacement with MATCH_ALL_BETWEEN"""
         self.assert_file_replace(
             input_filenames=["lint.yml"],
-            rule_filenames=["gha/python-version.md"],
+            rule_filenames=["python-version.md"],
             output_filenames=["lint-python-version.yml"],
         )
 
@@ -46,6 +46,6 @@ class TestMLR(MLRTestCase):
         """
         self.assert_file_replace(
             input_filenames=["lint.yml"],
-            rule_filenames=["gha/ruff-tab-indent.md"],
+            rule_filenames=["ruff-tab-indent.md"],
             output_filenames=["lint-ruff.yml"],
         )
