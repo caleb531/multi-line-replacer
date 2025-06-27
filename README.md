@@ -7,7 +7,7 @@
 [![Coverage Status](https://coveralls.io/repos/caleb531/multi-line-replacer/badge.svg?branch=main)](https://coveralls.io/r/caleb531/multi-line-replacer?branch=main)
 
 Multi-Line Replacer is a CLI utility for replacing multi-line hunks of strings
-across one or more files. Matc\hing is mostly textual, but wildcard matching is
+across one or more files. Matching is mostly textual, but wildcard matching is
 supported, and replacements are indentation-aware.
 
 ## Usage
