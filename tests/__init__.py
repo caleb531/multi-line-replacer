@@ -41,28 +41,22 @@ class MLRTestCase(unittest.TestCase):
         with contextlib.suppress(OSError):
             shutil.rmtree(temp_dir_path)
 
-    def get_input_path(self, input_filename):
-        return temp_dir_path / "input" / input_filename
-
-    def get_rule_path(self, input_filename):
-        return temp_dir_path / "rules" / input_filename
-
-    def get_output_path(self, input_filename):
-        return temp_dir_path / "output" / input_filename
+    def get_fixture_path(self, subpath):
+        return temp_dir_path / subpath
 
     def assert_file_replace(self, input_filenames, rule_filenames, output_filenames):
         with patch(
             "sys.argv",
             [
                 __file__,
-                *(str(self.get_input_path(f)) for f in input_filenames),
+                *(str(self.get_fixture_path(f)) for f in input_filenames),
                 "-r",
-                *(str(self.get_rule_path(f)) for f in rule_filenames),
+                *(str(self.get_fixture_path(f)) for f in rule_filenames),
             ],
         ):
             main()
             for input_file, output_file in zip(input_filenames, output_filenames):
                 self.assertEqual(
-                    self.get_output_path(output_file).read_text(),
-                    self.get_input_path(input_file).read_text(),
+                    self.get_fixture_path(output_file).read_text(),
+                    self.get_fixture_path(input_file).read_text(),
                 )
