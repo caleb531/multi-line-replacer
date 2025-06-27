@@ -45,6 +45,10 @@ This rule replaces flake8 with ruff in a Github Actions linting workflow.
 ```
 ````
 
+The language specifier at the start of each code fence is ignored by the
+utility. Still, it is highly recommended to specify so that syntax highlighting
+is enabled in your editor (for a better authoring experience).
+
 To better understand the expected rules format and what's allowed, please see
 the `example-rules` directory.
 
