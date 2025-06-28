@@ -21,17 +21,20 @@ def get_cli_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "input_paths",
+        metavar="INPUT_FILE",
         nargs="+",
         type=ExpandedPath,
-        help="One or more paths of files to apply replacements to.",
+        help="One or more paths to files to apply replacements to.",
     )
     parser.add_argument(
         "-r",
-        "--replacement",
+        "--rules",
+        metavar="RULE_FILE",
+        dest="rule_paths",
         nargs="+",
         required=True,
         type=ExpandedPath,
-        help="One or more paths of replacement rule Markdown files. Each file should contain pairs of triple-backtick (```) fenced code blocks, where the first fenced block is the text to be replaced and the second fenced block is the replacement text.",  # noqa: E501
+        help="One or more paths to replacement rule Markdown files. Each file should contain pairs of triple-backtick (```) fenced code blocks, where the first fenced block is the text to be replaced and the second fenced block is the replacement text.",  # noqa: E501
     )
     return parser.parse_args()
 
@@ -44,7 +47,7 @@ def main():
     for input_path in args.input_paths:
         input_text = input_path.read_text()
         # Apply each replacement rule to each input file
-        for rule_path in args.replacement:
+        for rule_path in args.rule_paths:
             rule_text = rule_path.read_text()
             code_blocks = extract_code_blocks(rule_text)
             # Enumerate fenced code blocks in pairs to get each pair of
