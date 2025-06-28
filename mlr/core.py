@@ -47,21 +47,21 @@ def get_indent_unit(text):
     return None
 
 
-def evaluate_placeholder_vars(text):
+def evaluate_wildcard_variables(text):
     """
-    Evaluate textual placeholder variables in the given target text to achieve
+    Evaluate textual wildcard variables in the given target text to achieve
     certain behaviors (like wildcard-matching through the end of a line, or a
     wildcard-match for only a single word)
     """
-    placeholder_evaluations = {
+    wildcard_evaluations = {
         # Match all non-newline characters until the end of the line is reached
         "MATCH_UNTIL_END_OF_LINE": r"[^\n]*",
         # Match all non-newline characters between two delimiters (like quotes)
         "MATCH_ALL_BETWEEN": r"[^\n]*?",
     }
-    for placeholder_var_name, replacement in placeholder_evaluations.items():
+    for wildcard_var_name, replacement in wildcard_evaluations.items():
         text = re.sub(
-            re.escape(placeholder_var_name),
+            re.escape(wildcard_var_name),
             replacement,
             text,
         )
@@ -75,9 +75,9 @@ def replace_text(input_text, target_text, replacement_text):
     """
     replace_this_patt = "\n".join(
         (
-            # Evaluate special placeholder variables like
+            # Evaluate special wildcard variables like
             # MATCH_UNTIL_END_OF_LINE
-            evaluate_placeholder_vars(rf"([ \t]*){re.escape(line.strip())}")
+            evaluate_wildcard_variables(rf"([ \t]*){re.escape(line.strip())}")
             if line
             else ""
         )

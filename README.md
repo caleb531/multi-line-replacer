@@ -51,7 +51,7 @@ is enabled in your editor (for a better authoring experience).
 
 ### Wildcard Matching
 
-There are two special placeholder variables:
+There are two special wildcard variables:
 
 - `MATCH_UNTIL_END_OF_LINE` (`[^\n]*`)
 - `MATCH_ALL_BETWEEN` (`[^\n]*?`)
