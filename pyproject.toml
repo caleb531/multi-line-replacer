@@ -1,6 +1,6 @@
 [project]
 name = "multi-line-replacer"
-version = "1.0.0b2"
+version = "1.0.0b3"
 description = "A CLI utility for replacing multi-line strings in files. Supports textual replacements with wildcard matching indentation-aware replacements."
 readme = "README.md"
 requires-python = ">=3.9"
