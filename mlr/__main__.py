@@ -5,7 +5,7 @@ import argparse
 from mlr.core import ExpandedPath, extract_code_blocks, replace_text
 
 
-def pluralize(singular, plural, count):
+def pluralize(singular: str, plural: str, count: int) -> str:
     """
     Return "1 <singular>" or "<count> <plural>", where the noun is either in
     singular or plural form depending on the supplied count
@@ -16,7 +16,7 @@ def pluralize(singular, plural, count):
         return f"{count} {plural}"
 
 
-def get_cli_args():
+def get_cli_args() -> argparse.Namespace:
     """Define and parse CLI arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -39,7 +39,7 @@ def get_cli_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
     total_replacement_count = 0

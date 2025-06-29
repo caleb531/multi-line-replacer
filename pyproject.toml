@@ -28,14 +28,16 @@ multi-line-replacer = "mlr.__main__:main"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-
 [dependency-groups]
 dev = [
     "coverage>=7.9.1",
+    "mypy>=1.16.1",
     "nose2>=0.15.1",
     "ruff>=0.12.0",
     "tomli>=2.2.1",
 ]
+
+# Ruff
 
 [tool.ruff]
 include = ["**/*.py"]
@@ -52,6 +54,18 @@ select = [
     # perflint
     "PERF",
 ]
+
+# mypy
+
+[tool.mypy]
+disallow_untyped_defs = true
+exclude = ['build', 'dist']
+
+# It's not practical to add type annotations to tests
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
 
 # Configuration for coverage.py (https://pypi.python.org/pypi/coverage)
 

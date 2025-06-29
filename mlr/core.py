@@ -3,10 +3,14 @@ import os
 import re
 import sys
 from pathlib import PosixPath, WindowsPath
+from typing import Optional
 
 # Detect proper Path subclass to inherit from based on the user's platform,
 # since the top-level Path subclass is not designed to be subclassed directly
-BasePath = WindowsPath if sys.platform == "win32" else PosixPath
+if sys.platform == "win32":
+    BasePath = WindowsPath
+else:
+    BasePath = PosixPath
 
 
 class ExpandedPath(BasePath):
@@ -14,11 +18,11 @@ class ExpandedPath(BasePath):
     Path subclass that automatically expands the user' home directory (i.e. ~)
     """
 
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls, os.path.expanduser(*args), **kwargs)
+    def __new__(cls, path: str, **kwargs: object) -> "ExpandedPath":
+        return super().__new__(cls, os.path.expanduser(path), **kwargs)
 
 
-def extract_code_blocks(md_text):
+def extract_code_blocks(md_text: str) -> list[str]:
     """Extract fenced code blocks from the given Markdown text"""
     code_blocks = re.findall(
         r"```(?:[\w\-]*)\n(.*?)\n```",
@@ -33,7 +37,7 @@ def extract_code_blocks(md_text):
     return code_blocks
 
 
-def get_indent_unit(text):
+def get_indent_unit(text: str) -> Optional[str]:
     """
     Find the string representing the base unit of indentation in a given string
     of text; this can be either two spaces, four spaces, or a tab character.
@@ -47,7 +51,7 @@ def get_indent_unit(text):
     return None
 
 
-def evaluate_wildcard_variables(text):
+def evaluate_wildcard_variables(text: str) -> str:
     """
     Evaluate textual wildcard variables in the given target text to achieve
     certain behaviors (like wildcard-matching through the end of a line, or a
@@ -68,7 +72,9 @@ def evaluate_wildcard_variables(text):
     return text
 
 
-def replace_text(input_text, target_text, replacement_text):
+def replace_text(
+    input_text: str, target_text: str, replacement_text: str
+) -> tuple[str, int]:
     """
     Replace the given text in the input text with the replacement text,
     preserving indentation
@@ -91,11 +97,12 @@ def replace_text(input_text, target_text, replacement_text):
     base_indent_level = base_indent_matches.group(1)
     # Ensure that the replacement text's preferred indentation unit matches that
     # of the input text
+    input_indent_unit = get_indent_unit(input_text)
     replacement_indent_unit = get_indent_unit(replacement_text)
-    if replacement_indent_unit:
+    if replacement_indent_unit and input_indent_unit:
         replacement_text = re.sub(
             replacement_indent_unit,
-            get_indent_unit(input_text),
+            input_indent_unit,
             replacement_text,
         )
     # Ensure that the replacement text is indented to the same amount as the
