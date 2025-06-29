@@ -15,7 +15,7 @@ else:
 
 class ExpandedPath(BasePath):
     """
-    Path subclass that automatically expands the user' home directory (i.e. ~)
+    Path subclass that automatically expands the user's home directory (i.e. ~)
     """
 
     def __new__(cls, path: str, **kwargs: object) -> "ExpandedPath":
@@ -23,7 +23,11 @@ class ExpandedPath(BasePath):
 
 
 def extract_code_blocks(md_text: str) -> list[str]:
-    """Extract fenced code blocks from the given Markdown text"""
+    """
+    Extract contents of all fenced code blocks from the given Markdown text into
+    a list, where each list item represents the contents of that code block
+    (minus any optional language specifier)
+    """
     code_blocks = re.findall(
         r"```(?:[\w\-]*)\n(.*?)\n```",
         md_text,
@@ -40,7 +44,7 @@ def extract_code_blocks(md_text: str) -> list[str]:
 def get_indent_unit(text: str) -> Optional[str]:
     """
     Find the string representing the base unit of indentation in a given string
-    of text; this can be either two spaces, four spaces, or a tab character.
+    of text; this can be either two spaces, four spaces, or a tab character
     """
     for indent_level in ((" " * 2), (" " * 4), "\t"):
         # The positive lookahead is because since 2-space indent is really a
@@ -77,7 +81,9 @@ def replace_text(
 ) -> tuple[str, int]:
     """
     Replace the given text in the input text with the replacement text,
-    preserving indentation
+    preserving indentation; the return value is a tuple containing 1) the full
+    output text after replacements have been made, and 2) the number of
+    replacements made
     """
     replace_this_patt = "\n".join(
         (
