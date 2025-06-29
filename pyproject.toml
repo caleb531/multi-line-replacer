@@ -61,12 +61,6 @@ select = [
 disallow_untyped_defs = true
 exclude = ['build', 'dist']
 
-# It's not practical to add type annotations to tests
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
-
-
 # Configuration for coverage.py (https://pypi.python.org/pypi/coverage)
 
 [tool.coverage.run]

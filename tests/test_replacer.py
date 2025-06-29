@@ -6,7 +6,7 @@ from tests.utils import MLRTestCase
 class TestMLR(MLRTestCase):
     """Test all multi-line-replacer (mlr) functionality"""
 
-    def test_literal_replacement(self):
+    def test_literal_replacement(self) -> None:
         """Should perform a literal textual replacement"""
         self.assert_file_replace(
             input_filenames=["input/test.editorconfig"],
@@ -15,7 +15,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
         )
 
-    def test_literal_target_misindented(self):
+    def test_literal_target_misindented(self) -> None:
         """
         Should perform a literal textual replacement even if target text is
         misindented
@@ -27,7 +27,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
         )
 
-    def test_match_until_end_of_line(self):
+    def test_match_until_end_of_line(self) -> None:
         """Should perform a replacement with MATCH_UNTIL_END_OF_LINE"""
         self.assert_file_replace(
             input_filenames=["input/lint.yml"],
@@ -36,7 +36,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
         )
 
-    def test_match_all_between(self):
+    def test_match_all_between(self) -> None:
         """Should perform a replacement with MATCH_ALL_BETWEEN"""
         self.assert_file_replace(
             input_filenames=["input/lint.yml"],
@@ -45,7 +45,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
         )
 
-    def test_normalize_indent_unit_in_replacement(self):
+    def test_normalize_indent_unit_in_replacement(self) -> None:
         """
         Should normalize indent unit in replacement to match indent unit of
         input text
@@ -57,7 +57,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
         )
 
-    def test_no_match(self):
+    def test_no_match(self) -> None:
         """
         Should leave the file untouched if no matches are found
         """
@@ -68,7 +68,7 @@ class TestMLR(MLRTestCase):
             expected_cli_message="1 file unchanged (no replacements made)",
         )
 
-    def test_missing_code_blocks(self):
+    def test_missing_code_blocks(self) -> None:
         """
         Should raise a RuntimeError if there are an odd number of code blocks
         """

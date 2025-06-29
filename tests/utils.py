@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from io import StringIO
 from pathlib import Path
+from typing import Optional, Sequence, Union
 from unittest.mock import patch
 
 from mlr.__main__ import main
@@ -29,7 +30,7 @@ class MLRTestCase(unittest.TestCase):
     # Do not limit size of diffs (makes for easier debugging of failing tests)
     maxDiff = None
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
         Before each test, create a temporary directory and copy the relevant
         test fixture files to it
@@ -41,12 +42,12 @@ class MLRTestCase(unittest.TestCase):
                 os.makedirs(temp_subdir_path)
                 shutil.copytree(subdir_path, temp_subdir_path, dirs_exist_ok=True)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """After each test, remove the temporary test fixture directories"""
         with contextlib.suppress(OSError):
             shutil.rmtree(temp_dir_path)
 
-    def get_fixture_path(self, file_path):
+    def get_fixture_path(self, file_path: Union[str, Path]) -> Path:
         """
         Return a Path object representing the given file path relative to the
         temporary test data directory
@@ -55,11 +56,11 @@ class MLRTestCase(unittest.TestCase):
 
     def assert_file_replace(
         self,
-        input_filenames,
-        rule_filenames,
-        output_filenames,
-        expected_cli_message=None,
-    ):
+        input_filenames: Sequence[Union[str, Path]],
+        rule_filenames: Sequence[Union[str, Path]],
+        output_filenames: Sequence[Union[str, Path]],
+        expected_cli_message: Optional[Union[str, Path]] = None,
+    ) -> None:
         """
         A custom assertion that runs the CLI program with the specified
         parameters, and optionally checks the summary message from stdout
