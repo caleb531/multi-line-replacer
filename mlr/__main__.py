@@ -39,6 +39,23 @@ def get_cli_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def print_replacement_summary(
+    total_file_count: int, total_files_changed: int, total_replacement_count: int
+) -> None:
+    """
+    Print a summary of how many files have been changed and how many
+    replacements have been made
+    """
+    if total_files_changed:
+        print(
+            f"{pluralize('file', 'files', total_files_changed)} changed ({pluralize('replacement', 'replacements', total_replacement_count)}), {pluralize('file', 'files', total_file_count - total_files_changed)} unchanged"  # noqa: E501
+        )
+    else:
+        print(
+            f"{pluralize('file', 'files', total_file_count - total_files_changed)} unchanged (no replacements made)"  # noqa: E501
+        )
+
+
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
@@ -62,14 +79,11 @@ def main() -> None:
         if replacement_count:
             total_files_changed += 1
         input_path.write_text(input_text)
-        if total_files_changed:
-            print(
-                f"{pluralize('file', 'files', total_files_changed)} changed ({pluralize('replacement', 'replacements', total_replacement_count)}), {pluralize('file', 'files', len(args.input_paths) - total_files_changed)} unchanged"  # noqa: E501
-            )
-        else:
-            print(
-                f"{pluralize('file', 'files', len(args.input_paths) - total_files_changed)} unchanged (no replacements made)"  # noqa: E501
-            )
+        print_replacement_summary(
+            total_file_count=len(args.input_paths),
+            total_files_changed=total_files_changed,
+            total_replacement_count=total_replacement_count,
+        )
 
 
 if __name__ == "__main__":
