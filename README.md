@@ -59,7 +59,7 @@ There are two special wildcard variables:
 
 These variables can be used anywhere in any code block representing the target
 text to match. Because these names are unique enough, word boundaries are not
-required around them.
+required around them (e.g. `vMATCH_UNTIL_END_OF_LINE` is allowed).
 
 ### More Examples
 
