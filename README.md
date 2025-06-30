@@ -45,9 +45,10 @@ This rule replaces flake8 with ruff in a Github Actions linting workflow.
 ```
 ````
 
+> [!NOTE]
 The language specifier at the start of each code fence is ignored by the
 utility. Still, it is highly recommended to specify so that syntax highlighting
-is enabled in your editor (for a better authoring experience).
+is enabled in your editor (i.e. it's for you, not the tool).
 
 ### Wildcard Matching
 
@@ -56,7 +57,9 @@ There are two special wildcard variables:
 - `MATCH_UNTIL_END_OF_LINE` (`[^\n]*`)
 - `MATCH_ALL_BETWEEN` (`[^\n]*?`)
 
-These variables can be used anywhere in a rule (no word boundaries required).
+These variables can be used anywhere in any code block representing the target
+text to match. Because these names are unique enough, word boundaries are not
+required around them.
 
 ### More Examples
 
