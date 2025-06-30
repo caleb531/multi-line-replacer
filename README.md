@@ -64,3 +64,26 @@ To better understand the expected rules format and what's allowed, please see
 the `example-rules` directory.
 
 [gfm-docs]: https://github.github.com/gfm/#fenced-code-blocks
+
+## About
+
+Multi-Line Replacer was built as my solution to an intermediate need I had while
+writing a large migration script. I had 17 Python projects using old tooling,
+and the script was written to migrate these projects to [uv][uv] and
+[ruff][ruff].
+
+Part of this migration process necessitated performing textual replacements on
+multi-line hunks of code. Regular expressions and editors like VS Code could
+somewhat achieve this, although they required escaping special characters and
+carefully specifying indentation. In other words, those tools proved to be too
+rigid and inflexible.
+
+Given these constraints, I conceived of a utility that could perform multi-line
+replacements with a friendlier authoring experience and greater indentation
+awareness. The implementation took several iterations to achieve positive
+results, but by the end, it contributed significantly to the successful
+migration of all 17 projects. From there, I decided to release it to the world
+as a more flexible and automated system for replacing multi-line hunks of code.
+
+[uv]: https://docs.astral.sh/uv/
+[ruff]: https://docs.astral.sh/ruff/
