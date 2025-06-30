@@ -79,11 +79,11 @@ def main() -> None:
         if replacement_count:
             total_files_changed += 1
         input_path.write_text(input_text)
-        print_replacement_summary(
-            total_file_count=len(args.input_paths),
-            total_files_changed=total_files_changed,
-            total_replacement_count=total_replacement_count,
-        )
+    print_replacement_summary(
+        total_file_count=len(args.input_paths),
+        total_files_changed=total_files_changed,
+        total_replacement_count=total_replacement_count,
+    )
 
 
 if __name__ == "__main__":
