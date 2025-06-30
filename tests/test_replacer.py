@@ -12,7 +12,7 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/test.editorconfig"],
             rule_filenames=["rules/editorconfig.md"],
             output_filenames=["output/test.editorconfig"],
-            expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
 
     def test_literal_target_misindented(self) -> None:
@@ -24,7 +24,7 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/test.editorconfig"],
             rule_filenames=["rules/editorconfig-misindented.md"],
             output_filenames=["output/test.editorconfig"],
-            expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
 
     def test_match_until_end_of_line(self) -> None:
@@ -33,7 +33,7 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/lint.yml"],
             rule_filenames=["rules/ruff.md"],
             output_filenames=["output/lint-ruff.yml"],
-            expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
 
     def test_match_all_between(self) -> None:
@@ -42,7 +42,7 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/lint.yml"],
             rule_filenames=["rules/python-version.md"],
             output_filenames=["output/lint-python-version.yml"],
-            expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
 
     def test_normalize_indent_unit_in_replacement(self) -> None:
@@ -54,7 +54,7 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/lint.yml"],
             rule_filenames=["rules/ruff-tab-indent.md"],
             output_filenames=["output/lint-ruff.yml"],
-            expected_cli_message="1 file changed (1 replacement), 0 files unchanged",
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
 
     def test_no_match(self) -> None:

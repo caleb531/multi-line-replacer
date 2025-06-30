@@ -39,16 +39,14 @@ def get_cli_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def print_replacement_summary(
-    total_file_count: int, total_files_changed: int, total_replacement_count: int
-) -> None:
+def print_replacement_summary(total_file_count: int, total_files_changed: int) -> None:
     """
     Print a summary of how many files have been changed and how many
     replacements have been made
     """
     if total_files_changed:
         print(
-            f"{pluralize('file', 'files', total_files_changed)} changed ({pluralize('replacement', 'replacements', total_replacement_count)}), {pluralize('file', 'files', total_file_count - total_files_changed)} unchanged"  # noqa: E501
+            f"{pluralize('file', 'files', total_files_changed)} changed, {pluralize('file', 'files', total_file_count - total_files_changed)} unchanged"  # noqa: E501
         )
     else:
         print(
@@ -59,10 +57,10 @@ def print_replacement_summary(
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
-    total_replacement_count = 0
     total_files_changed = 0
     for input_path in args.input_paths:
-        input_text = input_path.read_text()
+        orig_input_text = input_path.read_text()
+        input_text = orig_input_text
         # Apply each replacement rule to each input file
         for rule_path in args.rule_paths:
             rule_text = rule_path.read_text()
@@ -72,17 +70,13 @@ def main() -> None:
             for target_text, replacement_text in zip(
                 code_blocks[0::2], code_blocks[1::2]
             ):
-                input_text, replacement_count = replace_text(
-                    input_text, target_text, replacement_text
-                )
-                total_replacement_count += replacement_count
-        if replacement_count:
+                input_text = replace_text(input_text, target_text, replacement_text)
+        if orig_input_text != input_text:
             total_files_changed += 1
         input_path.write_text(input_text)
     print_replacement_summary(
         total_file_count=len(args.input_paths),
         total_files_changed=total_files_changed,
-        total_replacement_count=total_replacement_count,
     )
 
 

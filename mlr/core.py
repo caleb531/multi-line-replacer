@@ -76,14 +76,11 @@ def evaluate_wildcard_variables(text: str) -> str:
     return text
 
 
-def replace_text(
-    input_text: str, target_text: str, replacement_text: str
-) -> tuple[str, int]:
+def replace_text(input_text: str, target_text: str, replacement_text: str) -> str:
     """
     Replace the given text in the input text with the replacement text,
-    preserving indentation; the return value is a tuple containing 1) the full
-    output text after replacements have been made, and 2) the number of
-    replacements made
+    preserving indentation; the return value is the full output text after
+    replacements have been made
     """
     replace_this_patt = "\n".join(
         (
@@ -99,7 +96,7 @@ def replace_text(
     # replacement text is indented the same amount
     base_indent_matches = re.search(replace_this_patt, input_text)
     if not base_indent_matches:
-        return input_text, 0
+        return input_text
     base_indent_level = base_indent_matches.group(1)
     # Ensure that the replacement text's preferred indentation unit matches that
     # of the input text
@@ -119,4 +116,4 @@ def replace_text(
         base_indent_level + line if line else ""
         for line in replacement_text.splitlines()
     )
-    return re.subn(replace_this_patt, replacement_text, input_text)
+    return re.sub(replace_this_patt, replacement_text, input_text)
