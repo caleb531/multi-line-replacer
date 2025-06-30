@@ -78,3 +78,16 @@ class TestMLR(MLRTestCase):
                 rule_filenames=["rules/missing-code-blocks.md"],
                 output_filenames=["input/publish.yml"],
             )
+
+    def test_multiple_input_files(self) -> None:
+        """
+        Should process multiple input files
+        """
+        self.assert_file_replace(
+            input_filenames=["input/lint.yml", "input/tests.yml"],
+            rule_filenames=["rules/python-version.md"],
+            output_filenames=[
+                "output/lint-python-version.yml",
+                "output/tests-python-version.yml",
+            ],
+        )
