@@ -91,3 +91,17 @@ class TestMLR(MLRTestCase):
                 "output/tests-python-version.yml",
             ],
         )
+
+    def test_multiple_rules(self) -> None:
+        """
+        Should process multiple rules on all specified input files
+        """
+        self.assert_file_replace(
+            input_filenames=["input/publish.yml"],
+            rule_filenames=[
+                "rules/uv-build.md",
+                "rules/setup-python-single.md",
+                "rules/pypa.md",
+            ],
+            output_filenames=["output/publish.yml"],
+        )
