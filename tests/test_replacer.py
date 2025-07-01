@@ -125,7 +125,7 @@ class TestMLR(MLRTestCase):
     @patch("sys.platform", "win32")
     def test_windows_detection(self) -> None:
         """
-        Should detect when the host system is Windows and therefore use
+        Should detect when the host system is Windows and therefore should use
         Windows-native paths (as opposed to POSIX paths)
         """
         core = importlib.import_module("mlr.core")
