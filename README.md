@@ -32,8 +32,8 @@ pipx install multi-line-replacer
 
 ## Usage
 
-The workflow takes one or more files on which to run replacements, and then a
-series of "replacement rule" files with the `-r` flag:
+The workflow takes one or more files on which to run replacements, and then one
+or more "replacement rule" files with the `-r` flag:
 
 ```sh
 mlr .github/workflows/*.yml -r example-rules/uv-gha.md
