@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+import importlib
+from pathlib import WindowsPath
+from unittest.mock import patch
+
 from tests.utils import MLRTestCase
 
 
@@ -117,3 +121,13 @@ class TestMLR(MLRTestCase):
             ],
             output_filenames=["output/publish.yml"],
         )
+
+    @patch("sys.platform", "win32")
+    def test_windows_detection(self) -> None:
+        """
+        Should detect when the host system is Windows and therefore use
+        Windows-native paths (as opposed to POSIX paths)
+        """
+        core = importlib.import_module("mlr.core")
+        importlib.reload(core)
+        self.assertEqual(core.BasePath, WindowsPath)
