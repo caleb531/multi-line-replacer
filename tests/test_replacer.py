@@ -105,3 +105,15 @@ class TestMLR(MLRTestCase):
             ],
             output_filenames=["output/publish.yml"],
         )
+
+    def test_multiple_replacements_per_rule(self) -> None:
+        """
+        Should process multiple replacements per rule file
+        """
+        self.assert_file_replace(
+            input_filenames=["input/publish.yml"],
+            rule_filenames=[
+                "rules/uv-all.md",
+            ],
+            output_filenames=["output/publish.yml"],
+        )
