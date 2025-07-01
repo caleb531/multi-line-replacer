@@ -66,7 +66,7 @@ This rule replaces flake8 with ruff in a Github Actions linting workflow.
 ````
 
 > [!NOTE]
-The language specifier at the start of each code fence is ignored by the
+The language specifier at the start of each code block is ignored by the
 utility. Still, it is highly recommended to specify so that syntax highlighting
 is enabled in your editor (i.e. it's for you, not the tool).
 
