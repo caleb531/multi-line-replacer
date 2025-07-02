@@ -78,7 +78,7 @@ wheels = [
 
 [[package]]
 name = "multi-line-replacer"
-version = "1.0.0b6"
+version = "1.0.0b7"
 source = { editable = "." }
 
 [package.dev-dependencies]
