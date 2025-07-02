@@ -1,4 +1,4 @@
-# multi-line-replacer (mlr)
+# Multi-Line Replacer (mlr)
 
 *Copyright 2025 Caleb Evans*  
 *Released under the MIT license*
@@ -6,7 +6,7 @@
 [![tests](https://github.com/caleb531/multi-line-replacer/actions/workflows/tests.yml/badge.svg)](https://github.com/caleb531/multi-line-replacer/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/caleb531/multi-line-replacer/badge.svg?branch=main)](https://coveralls.io/r/caleb531/multi-line-replacer?branch=main)
 
-multi-line-replacer (mlr) is a CLI utility for replacing multi-line hunks of
+Multi-Line Replacer (mlr) is a CLI utility for replacing multi-line hunks of
 strings across one or more files. Matching is mostly textual, but wildcard
 matching is supported, and replacements are indentation-aware.
 
