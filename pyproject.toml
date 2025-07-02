@@ -28,6 +28,12 @@ multi-line-replacer = "mlr.__main__:main"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mlr"]
+# Explicitly exclude other top-level items
+exclude = ["dist", "build", "tests"]
+
 [dependency-groups]
 dev = [
     "coverage>=7.9.1",
