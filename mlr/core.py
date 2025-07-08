@@ -82,7 +82,6 @@ def evaluate_environment_variables(text: str) -> str:
     environment variables with their values; every environment variable is
     represented by MATCH_ENV_{var_name}
     """
-    print(os.environ.get("PROJECT_PKG_NAME"))
     text = re.sub(r"MATCH_ENV_(\w+)", lambda m: os.environ.get(m.group(1), ""), text)
     if "MATCH_ENV_" in text:
         raise RuntimeError(
@@ -138,4 +137,6 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         base_indent_level + line if line else ""
         for line in replacement_text.splitlines()
     )
-    return re.sub(replace_this_patt, replacement_text, input_text)
+    input_text = evaluate_environment_variables(input_text)
+    input_text = re.sub(replace_this_patt, replacement_text, input_text)
+    return input_text
