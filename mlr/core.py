@@ -29,7 +29,7 @@ def extract_code_blocks(md_text: str) -> list[str]:
     (minus any optional language specifier)
     """
     code_blocks = re.findall(
-        r"```(?:[\w\-]*)\n(.*?)\n```",
+        r"```(?:[\w\-]*)\n(|.*?\n)```",
         md_text,
         flags=re.DOTALL,
     )
@@ -76,6 +76,31 @@ def evaluate_wildcard_variables(text: str) -> str:
     return text
 
 
+def evaluate_environment_variables(text: str) -> str:
+    """
+    Evaluate environment variables in the given target text by replacing
+    environment variables with their values; every environment variable is
+    represented by MATCH_ENV_{var_name}
+    """
+    print(os.environ.get("PROJECT_PKG_NAME"))
+    text = re.sub(r"MATCH_ENV_(\w+)", lambda m: os.environ.get(m.group(1), ""), text)
+    if "MATCH_ENV_" in text:
+        raise RuntimeError(
+            "There was an error replacing environment variables in the target text."
+        )
+    return text
+
+
+def evaluate_variables(text: str) -> str:
+    """
+    Evaluate textual variables in the given target text to achieve certain
+    behaviors (like wildcard-matching and environment variable evaluation)
+    """
+    text = evaluate_wildcard_variables(text)
+    text = evaluate_environment_variables(text)
+    return text
+
+
 def replace_text(input_text: str, target_text: str, replacement_text: str) -> str:
     """
     Replace the given text in the input text with the replacement text,
@@ -84,11 +109,8 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     """
     replace_this_patt = "\n".join(
         (
-            # Evaluate special wildcard variables like
-            # MATCH_UNTIL_END_OF_LINE
-            evaluate_wildcard_variables(rf"([ \t]*){re.escape(line.strip())}")
-            if line
-            else ""
+            # Evaluate wildcard and environment variables on the line
+            evaluate_variables(rf"([ \t]*){re.escape(line.strip())}") if line else ""
         )
         for line in target_text.splitlines()
     )
