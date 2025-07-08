@@ -108,6 +108,10 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         )
         for line in target_text.splitlines()
     )
+    # If replacement text is empty, then we need to ensure that the lines are
+    # actually removed (as opposed to being replaced with an empty string)
+    if replacement_text == "":
+        replace_this_patt += "\n"
     # Retrieve the base indentation level in the target text to ensure that the
     # replacement text is indented the same amount
     base_indent_matches = re.search(replace_this_patt, input_text)
