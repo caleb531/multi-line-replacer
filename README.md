@@ -114,6 +114,25 @@ module-root = ""
 ```
 ````
 
+### Removing Lines
+
+If you don't want to replace the text with anything, simply use an empty fenced
+code block for the replacement block in your rule file.
+
+````md
+## clone with submodules
+
+```yml
+with:
+  submodules: recursive
+```
+
+## disable submodule detection
+
+```yml
+```
+````
+
 ### More Examples
 
 To better understand the expected rules format and what's allowed, please see
