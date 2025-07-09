@@ -1,4 +1,14 @@
-## setuptools build-system
+You can use environment variables in any target text to allow for dynamic
+matches, as well as in any replacement text to allow for dynamic replacements.
+
+For example, this rule file represents upgrading a Python project's build
+system, uses the following environment variables:
+
+- `PROJECT_BUILD_SYSTEM`
+- `PROJECT_BUILD_BACKEND`
+- `PROJECT_PKG_NAME`
+
+## old build-system
 
 ```toml
 [build-system]

@@ -1,3 +1,6 @@
+This example shows a simple replacement, without any indentation and without
+utilizing other MLR features.
+
 ## json only
 
 ```ini

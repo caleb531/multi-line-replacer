@@ -1,3 +1,11 @@
+You can specify as many replacements as you want within the same file, as long
+as there are an even number of code blocks altogether. The code blocks are read
+in pairs, so the first code block represents the target text to match, the
+second code block represents the text to replace, and so on.
+
+As mentioned, only the code blocks are read by the tool; all headings and other
+Markdown content is ignored.
+
 ## pip (single python version)
 
 ```yml
