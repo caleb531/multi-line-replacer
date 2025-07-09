@@ -81,6 +81,39 @@ These variables can be used anywhere in any code block representing the target
 text to match. Because these names are unique enough, word boundaries are not
 required around them (e.g. `vMATCH_UNTIL_END_OF_LINE` is allowed).
 
+### Environment Variables
+
+You can also access environment variable values anywhere in your target text or
+replacement text. To do so, simply specify the name of your environment variable
+prefixed with `MATCH_ENV_` (e.g. if your environment variable is `FOO_BAR`, you
+would write `MATCH_ENV_FOO_BAR` into your rule file).
+
+For instance, suppose you wish to upgrade the build system across a number of
+Python projects. If you define `PROJECT_BUILD_SYSTEM`, `PROJECT_BUILD_BACKEND`,
+and `PROJECT_PKG_NAME`, you could write a rule file to use them like so:
+
+````md
+## setuptools build-system
+
+```toml
+[build-system]
+requires = ["MATCH_ENV_PROJECT_BUILD_SYSTEM"]
+build-backend = "MATCH_ENV_PROJECT_BUILD_BACKEND"
+```
+
+# uv_build build-system
+
+```toml
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "MATCH_ENV_PROJECT_PKG_NAME"
+module-root = ""
+```
+````
+
 ### More Examples
 
 To better understand the expected rules format and what's allowed, please see
