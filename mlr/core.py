@@ -116,7 +116,7 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     # replacement text is indented the same amount
     base_indent_matches = re.search(replace_this_patt, input_text)
     if not base_indent_matches:
-        return input_text
+        return input_text  # No match found, return original text
     base_indent_level = base_indent_matches.group(1)
     # Ensure that the replacement text's preferred indentation unit matches that
     # of the input text
@@ -136,6 +136,6 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         base_indent_level + line if line else ""
         for line in replacement_text.splitlines()
     )
-    input_text = evaluate_environment_variables(input_text)
     input_text = re.sub(replace_this_patt, replacement_text, input_text)
+    input_text = evaluate_environment_variables(input_text)
     return input_text

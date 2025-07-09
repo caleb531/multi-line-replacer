@@ -4,7 +4,7 @@ import importlib
 from pathlib import WindowsPath
 from unittest.mock import patch
 
-from tests.utils import MLRTestCase
+from tests.utils import MLRTestCase, use_env
 
 
 class TestMLR(MLRTestCase):
@@ -152,4 +152,18 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/tests.yml"],
             rule_filenames=["rules/replace-with-blank-line.md"],
             output_filenames=["output/tests-replace-with-blank-line.yml"],
+        )
+
+    @use_env("PROJECT_PKG_NAME", "myproject")
+    @use_env("PROJECT_BUILD_SYSTEM", "setuptools")
+    @use_env("PROJECT_BUILD_BACKEND", "setuptools.build_meta")
+    def test_environment_variables(self) -> None:
+        """
+        Should evaluate environment variables in both the target text and
+        replacement text
+        """
+        self.assert_file_replace(
+            input_filenames=["input/pyproject.toml"],
+            rule_filenames=["rules/upgrade-build-system.md"],
+            output_filenames=["output/pyproject.toml"],
         )

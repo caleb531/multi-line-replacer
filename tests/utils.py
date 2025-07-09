@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
 import contextlib
+import inspect
 import os
 import os.path
 import shutil
 import tempfile
 import unittest
+from functools import wraps
 from io import StringIO
 from pathlib import Path
-from typing import Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union
 from unittest.mock import patch
 
 from mlr.__main__ import main
@@ -86,3 +88,46 @@ class MLRTestCase(unittest.TestCase):
                 )
             if expected_cli_message:
                 self.assertEqual(expected_cli_message, out.getvalue().strip())
+
+
+class use_env(object):
+    """
+    A decorator (can also be used as a context manager) which sets an
+    environment variable for only the lifetime of the given code; this utility
+    works seamlessly for both functions and generators
+    """
+
+    def __init__(self, key: str, value: str) -> None:
+        self.key = key
+        self.value = value
+
+    def __enter__(self) -> None:
+        self.orig_value = os.environ.get(self.key, "")
+        os.environ[self.key] = self.value
+
+    def __exit__(
+        self,
+        type: Optional[type],
+        value: Optional[BaseException],
+        traceback: Optional[object],
+    ) -> None:
+        os.environ[self.key] = self.orig_value
+
+    # Derived from: <https://gist.github.com/LeoHuckvale/8f50f8f2a6235512827b>
+    # and
+    # <https://stackoverflow.com/questions/64622473/can-you-write-a-python-decorator-that-works-for-generator-functions-and-normal-f>
+    def __call__(self, func: Callable) -> Callable:
+        @wraps(func)
+        def function_wrapper(*args: Any, **kwargs: Any) -> Any:
+            with self:
+                return func(*args, **kwargs)
+
+        @wraps(func)
+        def generator_wrapper(*args: Any, **kwargs: Any) -> Any:
+            with self:
+                return (yield from func(*args, **kwargs))
+
+        if inspect.isgeneratorfunction(func):
+            return generator_wrapper
+        else:
+            return function_wrapper
