@@ -116,8 +116,8 @@ module-root = ""
 
 ### Removing Lines
 
-If you don't want to replace the text with anything, simply use an empty fenced
-code block for the replacement block in your rule file.
+If you want to remove every line that's matched by your target text, simply use
+an empty fenced code block for the replacement block in your rule file.
 
 ````md
 ## clone with submodules
