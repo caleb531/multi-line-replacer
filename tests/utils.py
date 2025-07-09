@@ -107,8 +107,8 @@ class use_env(object):
 
     def __exit__(
         self,
-        type: Optional[type],
-        value: Optional[BaseException],
+        exc_type: Optional[type],
+        exc_value: Optional[BaseException],
         traceback: Optional[object],
     ) -> None:
         os.environ[self.key] = self.orig_value
