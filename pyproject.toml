@@ -25,14 +25,13 @@ mlr = "mlr.__main__:main"
 multi-line-replacer = "mlr.__main__:main"
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["mlr"]
-# Explicitly exclude other top-level items
-exclude = ["dist", "build", "tests"]
+[tool.uv.build-backend]
+module-name = "mlr"
+module-root = ""
+
 
 [dependency-groups]
 dev = [
