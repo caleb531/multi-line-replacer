@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import importlib
-from pathlib import WindowsPath
+import os
+import os.path
+from pathlib import Path, WindowsPath
 from unittest.mock import patch
 
 from tests.utils import MLRTestCase, use_env
@@ -166,4 +168,21 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/pyproject.toml"],
             rule_filenames=["rules/upgrade-build-system.md"],
             output_filenames=["output/pyproject.toml"],
+        )
+
+
+class TestMLRPathExpansion(MLRTestCase):
+    """
+    Test expanding ~ to the user's home directory within paths supplied to MLR
+    """
+
+    temp_dir_path = Path(os.path.expanduser("~")) / ".cache" / "mlr-test-data"
+
+    def test_literal_replacement_expansion(self) -> None:
+        """Should perform a literal textual replacement (with ~ expansion)"""
+        self.assert_file_replace(
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/editorconfig.md"],
+            output_filenames=["output/test.editorconfig"],
+            expected_cli_message="1 file changed, 0 files unchanged",
         )
