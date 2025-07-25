@@ -128,9 +128,9 @@ class TestMLR(MLRTestCase):
         Should detect when the host system is Windows and therefore should use
         Windows-native paths (as opposed to POSIX paths)
         """
-        core = importlib.import_module("mlr.core")
-        importlib.reload(core)
-        self.assertEqual(core.BasePath, WindowsPath)
+        path = importlib.import_module("mlr.path")
+        importlib.reload(path)
+        self.assertEqual(path.BasePath, WindowsPath)
 
     def test_empty_code_block(self) -> None:
         """

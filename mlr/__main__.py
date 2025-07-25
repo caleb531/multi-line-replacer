@@ -2,7 +2,8 @@
 
 import argparse
 
-from mlr.core import ExpandedPath, extract_code_blocks, replace_text
+from mlr.core import extract_code_blocks, replace_text
+from mlr.path import ExpandedPath
 
 
 def pluralize(singular: str, plural: str, count: int) -> str:
