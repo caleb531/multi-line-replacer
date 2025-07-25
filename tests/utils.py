@@ -15,19 +15,19 @@ from unittest.mock import patch
 
 from mlr.__main__ import main
 
-# The temporary working directory in which the tests can safely perform file
-# modifications
-temp_dir_path = Path(tempfile.gettempdir()) / "mlr-test-data"
-# Subdirectories from anywhere in the project to copy to the temporary working
-# directory
-subdirs_to_copy = ("tests/input", "tests/output", "tests/rules")
-
 
 class MLRTestCase(unittest.TestCase):
     """
     A subclass of unittest.TestCase that provides additional behavior and
     assertions specific to the multi-line-replacer package
     """
+
+    # The temporary working directory in which the tests can safely perform file
+    # modifications
+    temp_dir_path = Path(tempfile.gettempdir()) / "mlr-test-data"
+    # Subdirectories from anywhere in the project to copy to the temporary
+    # working directory
+    subdirs_to_copy = ("tests/input", "tests/output", "tests/rules")
 
     # Do not limit size of diffs (makes for easier debugging of failing tests)
     maxDiff = None
@@ -37,9 +37,9 @@ class MLRTestCase(unittest.TestCase):
         Before each test, create a temporary directory and copy the relevant
         test fixture files to it
         """
-        for subdir_path in subdirs_to_copy:
+        for subdir_path in self.subdirs_to_copy:
             subdir_name = os.path.basename(subdir_path)
-            temp_subdir_path = temp_dir_path / subdir_name
+            temp_subdir_path = self.temp_dir_path / subdir_name
             with contextlib.suppress(OSError):
                 os.makedirs(temp_subdir_path)
                 shutil.copytree(subdir_path, temp_subdir_path, dirs_exist_ok=True)
@@ -47,14 +47,14 @@ class MLRTestCase(unittest.TestCase):
     def tearDown(self) -> None:
         """After each test, remove the temporary test fixture directories"""
         with contextlib.suppress(OSError):
-            shutil.rmtree(temp_dir_path)
+            shutil.rmtree(self.temp_dir_path)
 
     def get_fixture_path(self, file_path: Union[str, Path]) -> Path:
         """
         Return a Path object representing the given file path relative to the
         temporary test data directory
         """
-        return temp_dir_path / file_path
+        return self.temp_dir_path / file_path
 
     def assert_file_replace(
         self,
