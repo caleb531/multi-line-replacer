@@ -101,7 +101,7 @@ requires = ["MATCH_ENV_PROJECT_BUILD_SYSTEM"]
 build-backend = "MATCH_ENV_PROJECT_BUILD_BACKEND"
 ```
 
-# uv_build build-system
+## uv_build build-system
 
 ```toml
 [build-system]
