@@ -167,7 +167,18 @@ class TestMLR(MLRTestCase):
         self.assert_file_replace(
             input_filenames=["input/pyproject.toml"],
             rule_filenames=["rules/upgrade-build-system.md"],
-            output_filenames=["output/pyproject.toml"],
+            output_filenames=["output/pyproject-uv-build.toml"],
+        )
+
+    def test_backreferences(self) -> None:
+        """
+        Should capture backreferences in the target text and evaluate them
+        correctly in the replacement text
+        """
+        self.assert_file_replace(
+            input_filenames=["input/pyproject.toml"],
+            rule_filenames=["rules/coverage-include.md"],
+            output_filenames=["output/pyproject-coverage-include.toml"],
         )
 
 

@@ -8,6 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.coverage.run]
 branch = true
+include = ["myproject/*.py"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -15,5 +16,3 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "pass",
 ]
-
-include = ["myproject/*.py"]

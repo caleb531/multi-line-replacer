@@ -3,6 +3,10 @@ import os
 import re
 from typing import Optional
 
+# The regular expression pattern used to represent a consecutive string of zero
+# or more indents at the beginnong of a particular line
+INDENTATION_PATT = "[ \\t]*"
+
 
 def extract_code_blocks(md_text: str) -> list[str]:
     """
@@ -45,9 +49,9 @@ def evaluate_wildcard_variables(text: str) -> str:
     """
     wildcard_evaluations = {
         # Match all non-newline characters until the end of the line is reached
-        "MATCH_UNTIL_END_OF_LINE": r"[^\n]*",
+        "MATCH_UNTIL_END_OF_LINE": r"([^\n]*)",
         # Match all non-newline characters between two delimiters (like quotes)
-        "MATCH_ALL_BETWEEN": r"[^\n]*?",
+        "MATCH_ALL_BETWEEN": r"(.*?)",
     }
     for wildcard_var_name, replacement in wildcard_evaluations.items():
         text = re.sub(
@@ -77,6 +81,14 @@ def evaluate_variables(text: str) -> str:
     return text
 
 
+def evaluate_backreferences(text: str) -> str:
+    """
+    Evaluate backreferences in the given replacement text to achieve certain
+    behaviors (like referencing a wildcard match from the target text)
+    """
+    return re.sub(r"BACKREF_(\d+)", r"\\\1", text)
+
+
 def replace_text(input_text: str, target_text: str, replacement_text: str) -> str:
     """
     Replace the given text in the input text with the replacement text,
@@ -86,7 +98,9 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     replace_this_patt = "\n".join(
         (
             # Evaluate wildcard and environment variables on the line
-            evaluate_variables(rf"([ \t]*){re.escape(line.strip())}") if line else ""
+            evaluate_variables(rf"{INDENTATION_PATT}{re.escape(line.strip())}")
+            if line
+            else ""
         )
         for line in target_text.splitlines()
     )
@@ -96,7 +110,11 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         replace_this_patt += "\n"
     # Retrieve the base indentation level in the target text to ensure that the
     # replacement text is indented the same amount
-    base_indent_matches = re.search(replace_this_patt, input_text)
+    base_indent_matches = re.search(
+        replace_this_patt.replace(INDENTATION_PATT, rf"({INDENTATION_PATT})", 1),
+        input_text,
+        flags=re.DOTALL,
+    )
     if not base_indent_matches:
         return input_text  # No match found, return original text
     base_indent_level = base_indent_matches.group(1)
@@ -118,6 +136,11 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         base_indent_level + line if line else ""
         for line in replacement_text.splitlines()
     )
-    input_text = re.sub(replace_this_patt, replacement_text, input_text)
+    input_text = re.sub(
+        replace_this_patt,
+        evaluate_backreferences(replacement_text),
+        input_text,
+        flags=re.DOTALL,
+    )
     input_text = evaluate_environment_variables(input_text)
     return input_text

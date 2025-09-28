@@ -9,3 +9,15 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "myproject"
 module-root = ""
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "pass",
+]
+
+include = ["myproject/*.py"]
