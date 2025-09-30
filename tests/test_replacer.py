@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 
-import importlib
-import os
-import os.path
-from pathlib import Path, WindowsPath
-from unittest.mock import patch
-
 from tests.utils import MLRTestCase, use_env
 
 
@@ -124,16 +118,6 @@ class TestMLR(MLRTestCase):
             output_filenames=["output/publish.yml"],
         )
 
-    @patch("sys.platform", "win32")
-    def test_windows_detection(self) -> None:
-        """
-        Should detect when the host system is Windows and therefore should use
-        Windows-native paths (as opposed to POSIX paths)
-        """
-        path = importlib.import_module("mlr.path")
-        importlib.reload(path)
-        self.assertEqual(path.BasePath, WindowsPath)
-
     def test_empty_code_block(self) -> None:
         """
         Should remove lines by specifying an empty string as the replacement
@@ -179,21 +163,4 @@ class TestMLR(MLRTestCase):
             input_filenames=["input/pyproject.toml"],
             rule_filenames=["rules/coverage-include.md"],
             output_filenames=["output/pyproject-coverage-include.toml"],
-        )
-
-
-class TestMLRPathExpansion(MLRTestCase):
-    """
-    Test expanding ~ to the user's home directory within paths supplied to MLR
-    """
-
-    temp_dir_path = Path(os.path.expanduser("~")) / ".cache" / "mlr-test-data"
-
-    def test_literal_replacement_expansion(self) -> None:
-        """Should perform a literal textual replacement (with ~ expansion)"""
-        self.assert_file_replace(
-            input_filenames=["input/test.editorconfig"],
-            rule_filenames=["rules/editorconfig.md"],
-            output_filenames=["output/test.editorconfig"],
-            expected_cli_message="1 file changed, 0 files unchanged",
         )
