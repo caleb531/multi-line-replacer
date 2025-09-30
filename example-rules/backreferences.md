@@ -18,9 +18,9 @@ run: |
 
 ```yml
 env:
-  PROJECT_NAME: BACKREF_1
-  PY_VERSION: BACKREF_2
-  CACHE_KEY: BACKREF_3
+  PROJECT_NAME: MATCH_REF_1
+  PY_VERSION: MATCH_REF_2
+  CACHE_KEY: MATCH_REF_3
 run: |
   echo "Using ${PROJECT_NAME} on Python ${PY_VERSION} (cache: ${CACHE_KEY})"
 ```

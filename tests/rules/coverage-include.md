@@ -14,9 +14,9 @@ include = [MATCH_ALL_BETWEEN]
 
 ```toml
 [tool.coverage.run]
-BACKREF_1
-include = [BACKREF_3]
+MATCH_REF_1
+include = [MATCH_REF_3]
 
 [tool.coverage.report]
-BACKREF_2
+MATCH_REF_2
 ```

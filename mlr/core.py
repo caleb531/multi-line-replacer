@@ -86,7 +86,7 @@ def evaluate_backreferences(text: str) -> str:
     Evaluate backreferences in the given replacement text to achieve certain
     behaviors (like referencing a wildcard match from the target text)
     """
-    return re.sub(r"BACKREF_(\d+)", r"\\\1", text)
+    return re.sub(r"MATCH_REF_(\d+)", r"\\\1", text)
 
 
 def replace_text(input_text: str, target_text: str, replacement_text: str) -> str:

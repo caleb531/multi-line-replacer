@@ -137,7 +137,7 @@ with:
 
 If you use the wildcard variables `MATCH_UNTIL_END_OF_LINE` or
 `MATCH_ALL_BETWEEN` in your target text, you can reference each captured value
-in your replacement text using `BACKREF_1`, `BACKREF_2`, etc. Backreferences are
+in your replacement text using `MATCH_REF_1`, `MATCH_REF_2`, etc. Backreferences are
 numbered in the (left‑to‑right) order the wildcard variables appear.
 
 In the following example, we refactor a GitHub Actions step that currently
@@ -161,9 +161,9 @@ run: |
 
 ```yml
 env:
-  PROJECT_NAME: BACKREF_1
-  PY_VERSION: BACKREF_2
-  CACHE_KEY: BACKREF_3
+  PROJECT_NAME: MATCH_REF_1
+  PY_VERSION: MATCH_REF_2
+  CACHE_KEY: MATCH_REF_3
 run: |
   echo "Using ${PROJECT_NAME} on Python ${PY_VERSION} (cache: ${CACHE_KEY})"
 ```
