@@ -1,20 +1,13 @@
 #!/usr/bin/env python3.13
 
 import argparse
+from typing import List, Tuple
+
+from rich.console import Console
+from rich.text import Style, Text
 
 from mlr.core import extract_code_blocks, replace_text
 from mlr.path import ExpandedPath
-
-
-def pluralize(singular: str, plural: str, count: int) -> str:
-    """
-    Return "1 <singular>" or "<count> <plural>", where the noun is either in
-    singular or plural form depending on the supplied count
-    """
-    if count == 1:
-        return f"{count} {singular}"
-    else:
-        return f"{count} {plural}"
 
 
 def get_cli_args() -> argparse.Namespace:
@@ -40,25 +33,36 @@ def get_cli_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def print_replacement_summary(total_file_count: int, total_files_changed: int) -> None:
+def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
+    """Print each processed file path along with whether it changed.
+
+    Output format (no color):
+        /abs/path/to/file.yml (changed)
+        /abs/path/to/other.yml (unchanged)
+
+    Colors (when rich + TTY available):
+        changed   -> default
+        unchanged -> dim
     """
-    Print a summary of how many files have been changed and how many
-    replacements have been made
-    """
-    if total_files_changed:
-        print(
-            f"{pluralize('file', 'files', total_files_changed)} changed, {pluralize('file', 'files', total_file_count - total_files_changed)} unchanged"  # noqa: E501
-        )
-    else:
-        print(
-            f"{pluralize('file', 'files', total_file_count - total_files_changed)} unchanged (no replacements made)"  # noqa: E501
-        )
+    # If rich is available and stdout is a terminal, use color; otherwise
+    # fall back to plain print
+    console = Console()
+    for path_obj, changed in results:
+        status_text = "changed" if changed else "unchanged"
+        if console.is_terminal:
+            # Build styled text
+            color = Style(color=None) if changed else "dim"
+            txt = Text(str(path_obj), style=color)
+            txt.append(f" ({status_text})", style=color)
+            console.print(txt)
+        else:
+            print(f"{path_obj} ({status_text})")
 
 
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
-    total_files_changed = 0
+    results: List[Tuple[ExpandedPath, bool]] = []
     for input_path in args.input_paths:
         orig_input_text = input_path.read_text()
         input_text = orig_input_text
@@ -72,13 +76,10 @@ def main() -> None:
                 code_blocks[0::2], code_blocks[1::2]
             ):
                 input_text = replace_text(input_text, target_text, replacement_text)
-        if orig_input_text != input_text:
-            total_files_changed += 1
+        file_changed = orig_input_text != input_text
         input_path.write_text(input_text)
-    print_replacement_summary(
-        total_file_count=len(args.input_paths),
-        total_files_changed=total_files_changed,
-    )
+        results.append((input_path, file_changed))
+    print_file_statuses(results)
 
 
 if __name__ == "__main__":

@@ -33,5 +33,7 @@ class TestMLRPathExpansion(MLRTestCase):
             input_filenames=["input/test.editorconfig"],
             rule_filenames=["rules/editorconfig.md"],
             output_filenames=["output/test.editorconfig"],
-            expected_cli_message="1 file changed, 0 files unchanged",
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')} (changed)"
+            ),
         )

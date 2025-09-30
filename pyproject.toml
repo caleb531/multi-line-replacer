@@ -12,7 +12,9 @@ maintainers = [
 ]
 license = "MIT"
 keywords = ["replacements", "cli", "command-line", "utility", "multi-line", "string", "wildcard", "indentation-aware"]
-dependencies=[]
+dependencies=[
+    "rich>=13.0.0,<14.0.0",
+]
 
 [project.urls]
 homepage = "https://github.com/caleb531/multi-line-replacer"
