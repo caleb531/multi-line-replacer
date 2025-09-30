@@ -37,7 +37,7 @@ def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
     """Print each processed file path along with whether it changed.
 
     Output format (no color):
-        /abs/path/to/file.yml (changed)
+        /abs/path/to/file.yml
         /abs/path/to/other.yml (unchanged)
 
     Colors (when rich + TTY available):
@@ -53,8 +53,11 @@ def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
             # Build styled text
             color = Style(color=None) if changed else "dim"
             txt = Text(str(path_obj), style=color)
-            txt.append(f" ({status_text})", style=color)
+            if not changed:
+                txt.append(f" ({status_text})", style=color)
             console.print(txt)
+        elif changed:
+            print(f"{path_obj}")
         else:
             print(f"{path_obj} ({status_text})")
 
