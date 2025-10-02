@@ -71,16 +71,6 @@ def evaluate_environment_variables(text: str) -> str:
     return re.sub(r"MATCH_ENV_(\w+)", lambda m: os.environ.get(m.group(1), ""), text)
 
 
-def evaluate_variables(text: str) -> str:
-    """
-    Evaluate textual variables in the given target text to achieve certain
-    behaviors (like wildcard-matching and environment variable evaluation)
-    """
-    text = evaluate_wildcard_variables(text)
-    text = evaluate_environment_variables(text)
-    return text
-
-
 def evaluate_backreferences(text: str) -> str:
     """
     Evaluate backreferences in the given replacement text to achieve certain
@@ -97,8 +87,11 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     """
     replace_this_patt = "\n".join(
         (
-            # Evaluate wildcard and environment variables on the line
-            evaluate_variables(rf"{INDENTATION_PATT}{re.escape(line.strip())}")
+            evaluate_wildcard_variables(
+                evaluate_environment_variables(
+                    rf"{INDENTATION_PATT}{re.escape(line.strip())}"
+                )
+            )
             if line
             else ""
         )
