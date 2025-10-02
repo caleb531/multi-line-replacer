@@ -138,9 +138,10 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     )
     input_text = re.sub(
         replace_this_patt,
-        evaluate_backreferences(replacement_text),
+        evaluate_environment_variables(
+            evaluate_backreferences(replacement_text),
+        ),
         input_text,
         flags=re.DOTALL,
     )
-    input_text = evaluate_environment_variables(input_text)
     return input_text
