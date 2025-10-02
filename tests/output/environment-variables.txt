@@ -1,0 +1,7 @@
+
+This MATCH_ENV_EXAMPLE_VARIABLE instance is literal and should not be changed by
+virtue of being part of the input text.
+
+But the variable should be injected here:
+
+Example Label: example-value
