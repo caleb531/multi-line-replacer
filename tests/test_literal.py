@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+from tests.utils import MLRTestCase
+
+
+class TestMLR(MLRTestCase):
+    """Test literal string replacements without any variables"""
+
+    def test_literal_replacement(self) -> None:
+        """Should perform a literal textual replacement"""
+        self.assert_file_replace(
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/editorconfig.md"],
+            output_filenames=["output/test.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')}"
+            ),
+        )
+
+    def test_literal_target_misindented(self) -> None:
+        """
+        Should perform a literal textual replacement even if target text is
+        misindented
+        """
+        self.assert_file_replace(
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/editorconfig-misindented.md"],
+            output_filenames=["output/test.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')}"
+            ),
+        )
+
+    def test_no_match(self) -> None:
+        """
+        Should leave the file untouched if no matches are found
+        """
+        self.assert_file_replace(
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/python-version.md"],
+            output_filenames=["input/test.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')} (unchanged)"
+            ),
+        )

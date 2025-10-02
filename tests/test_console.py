@@ -8,6 +8,11 @@ from tests.utils import MLRTestCase
 
 
 class FakeConsole:
+    """
+    A fake Console class that simulates a rich.console.Console class in a
+    terminal environment for testing purposes.
+    """
+
     is_terminal = True
 
     def print(self, obj: Text) -> None:
