@@ -1,11 +1,13 @@
 ## unevaluated environment variable
 
 ```txt
-Example Label: EXAMPLE_VARIABLE_PLACEHOLDER
+The below placeholder text will be replaced:
+- REPLACE_THIS_WITH_VALUE
 ```
 
 ## evaluated environment variable
 
 ```txt
-Example Label: MATCH_ENV_EXAMPLE_VARIABLE
+The below placeholder text will be replaced:
+- MATCH_ENV_EXAMPLE_VARIABLE
 ```

@@ -1,7 +1,8 @@
 
-This MATCH_ENV_EXAMPLE_VARIABLE instance is literal and should not be changed by
-virtue of being part of the input text.
+These variables are part of the input text and therefore should remain literal:
+- MATCH_ALL_BETWEEN
+- MATCH_UNTIL_END_OF_LINE
+- MATCH_ENV_EXAMPLE_VARIABLE
 
-But the variable should be injected here:
-
-Example Label: example-value
+The below placeholder text will be replaced:
+- example-value

@@ -39,13 +39,8 @@ class TestMLR(MLRTestCase):
         )
 
     @use_env("EXAMPLE_VARIABLE", "example-value")
-    @use_env("PROJECT_BUILD_SYSTEM", "setuptools")
-    @use_env("PROJECT_BUILD_BACKEND", "setuptools.build_meta")
-    def test_environment_variables_in_input_text(self) -> None:
-        """
-        Should not evaluate literal environment variable names within the input
-        text
-        """
+    def test_variables_in_input_text(self) -> None:
+        """Should not evaluate literal variable names within the input text"""
         self.assert_file_replace(
             input_filenames=["input/environment-variables.txt"],
             rule_filenames=["rules/example-environment-variable.md"],
