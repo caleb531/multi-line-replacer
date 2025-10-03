@@ -1,12 +1,14 @@
 #!/usr/bin/env python3.13
 
 import argparse
+import sys
+from pathlib import Path
 from typing import List, Tuple
 
 from rich.console import Console
 from rich.text import Style, Text
 
-from mlr.core import extract_code_blocks, replace_text
+from mlr.core import extract_code_blocks_from_md_text, replace_text
 from mlr.path import ExpandedPath
 
 
@@ -31,6 +33,20 @@ def get_cli_args() -> argparse.Namespace:
         help="One or more paths to replacement rule Markdown files. Each file should contain pairs of triple-backtick (```) fenced code blocks, where the first fenced block is the text to be replaced and the second fenced block is the replacement text.",  # noqa: E501
     )
     return parser.parse_args()
+
+
+def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
+    """Extract fenced code blocks from a Markdown file at the given path"""
+    md_text = md_path.read_text()
+    try:
+        return extract_code_blocks_from_md_text(md_text)
+    except RuntimeError:
+        print(
+            f"{Path(sys.argv[0]).name}: "
+            f"{md_path}: "
+            f"replacement file must have an even number of fenced code blocks"
+        )
+        sys.exit(1)
 
 
 def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
@@ -71,8 +87,7 @@ def main() -> None:
         input_text = orig_input_text
         # Apply each replacement rule to each input file
         for rule_path in args.rule_paths:
-            rule_text = rule_path.read_text()
-            code_blocks = extract_code_blocks(rule_text)
+            code_blocks = extract_code_blocks_from_md_path(rule_path)
             # Enumerate fenced code blocks in pairs to get each pair of
             # target/replacement rules
             for target_text, replacement_text in zip(

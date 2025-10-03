@@ -8,7 +8,7 @@ from typing import Optional
 INDENTATION_PATT = "[ \\t]*"
 
 
-def extract_code_blocks(md_text: str) -> list[str]:
+def extract_code_blocks_from_md_text(md_text: str) -> list[str]:
     """
     Extract contents of all fenced code blocks from the given Markdown text into
     a list, where each list item represents the contents of that code block

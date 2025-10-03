@@ -8,9 +8,10 @@ class TestMLR(MLRTestCase):
 
     def test_missing_code_blocks(self) -> None:
         """
-        Should raise a RuntimeError if there are an odd number of code blocks
+        Should print an error exit program if there are an odd number of code
+        blocks
         """
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(SystemExit):
             self.assert_file_replace(
                 input_filenames=["input/publish.yml"],
                 rule_filenames=["rules/missing-code-blocks.md"],
