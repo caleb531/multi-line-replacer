@@ -3,6 +3,8 @@ import os
 import re
 from typing import Optional
 
+from mlr.exceptions import CodeBlocksMismatched
+
 # The regular expression pattern used to represent a consecutive string of zero
 # or more indents at the beginnong of a particular line
 INDENTATION_PATT = "[ \\t]*"
@@ -21,7 +23,7 @@ def extract_code_blocks_from_md_text(md_text: str) -> list[str]:
     )
     # If number of code blocks is not even
     if len(code_blocks) % 2 != 0:
-        raise RuntimeError(
+        raise CodeBlocksMismatched(
             "Replacement file must have an even number of fenced code blocks."
         )
     return code_blocks

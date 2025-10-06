@@ -9,6 +9,7 @@ from rich.console import Console
 from rich.text import Style, Text
 
 from mlr.core import extract_code_blocks_from_md_text, replace_text
+from mlr.exceptions import CodeBlocksMismatched
 from mlr.path import ExpandedPath
 
 
@@ -40,7 +41,7 @@ def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
     md_text = md_path.read_text()
     try:
         return extract_code_blocks_from_md_text(md_text)
-    except RuntimeError:
+    except CodeBlocksMismatched:
         print(
             f"{Path(sys.argv[0]).name}: "
             f"{md_path}: "
