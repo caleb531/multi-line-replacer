@@ -12,8 +12,7 @@ matching is supported, and replacements are indentation-aware.
 
 ## Installation
 
-You can install multi-line-replacer via your preferred global package manager
-for Python:
+You can install MLR via pip, *or* using your preferred package manager
 
 ```sh
 # via pip
