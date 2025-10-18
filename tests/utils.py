@@ -49,6 +49,13 @@ class MLRTestCase(unittest.TestCase):
         with contextlib.suppress(OSError):
             shutil.rmtree(self.temp_dir_path)
 
+    def get_project_path(self, file_path: Union[str, Path]) -> Path:
+        """
+        Return a Path object representing the given file path relative to the
+        project directory
+        """
+        return Path("tests", file_path)
+
     def get_fixture_path(self, file_path: Union[str, Path]) -> Path:
         """
         Return a Path object representing the given file path relative to the
@@ -83,7 +90,7 @@ class MLRTestCase(unittest.TestCase):
             main()
             for input_file, output_file in zip(input_filenames, output_filenames):
                 self.assertEqual(
-                    self.get_fixture_path(output_file).read_text(),
+                    self.get_project_path(output_file).read_text(),
                     self.get_fixture_path(input_file).read_text(),
                 )
             if expected_cli_message:
