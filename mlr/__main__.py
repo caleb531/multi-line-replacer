@@ -96,7 +96,8 @@ def main() -> None:
             ):
                 input_text = replace_text(input_text, target_text, replacement_text)
         file_changed = orig_input_text != input_text
-        input_path.write_text(input_text)
+        if file_changed:
+            input_path.write_text(input_text)
         results.append((input_path, file_changed))
     print_file_statuses(results)
 
