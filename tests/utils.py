@@ -70,6 +70,7 @@ class MLRTestCase(unittest.TestCase):
         output_filenames: Sequence[Union[str, Path]],
         expected_cli_message: Optional[Union[str, Path]] = None,
         dry_run: bool = False,
+        quiet: bool = False,
     ) -> None:
         """
         A custom assertion that runs the CLI program with the specified
@@ -82,6 +83,7 @@ class MLRTestCase(unittest.TestCase):
                 [
                     __file__,
                     *(["--dry-run"] if dry_run else []),
+                    *(["--quiet"] if quiet else []),
                     *(str(self.get_fixture_path(f)) for f in input_filenames),
                     "-r",
                     *(str(self.get_fixture_path(f)) for f in rule_filenames),
@@ -95,7 +97,7 @@ class MLRTestCase(unittest.TestCase):
                     self.get_project_path(output_file).read_text(),
                     self.get_fixture_path(input_file).read_text(),
                 )
-            if expected_cli_message:
+            if expected_cli_message is not None:
                 self.assertEqual(expected_cli_message, out.getvalue().strip())
 
 

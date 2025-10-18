@@ -47,3 +47,14 @@ class TestConsoleOutput(MLRTestCase):
             output_filenames=["output/lint-ruff.yml", "input/publish.yml"],
             expected_cli_message=f"{changed_path}\n{unchanged_path} (unchanged)",
         )
+
+    @patch("mlr.__main__.Console", FakeConsole)
+    def test_quiet_mode(self) -> None:
+        """Should output both changed and unchanged files within a terminal."""
+        self.assert_file_replace(
+            quiet=True,
+            input_filenames=["input/lint.yml", "input/publish.yml"],
+            rule_filenames=["rules/ruff.md"],
+            output_filenames=["output/lint-ruff.yml", "input/publish.yml"],
+            expected_cli_message="",
+        )

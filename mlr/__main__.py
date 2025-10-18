@@ -39,6 +39,12 @@ def get_cli_args() -> argparse.Namespace:
         help="Perform all replacements in memory without writing changes to "
         "disk. Useful for testing which files would be changed.",
     )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        action="store_true",
+        help="Suppresses all output except for errors.",
+    )
     return parser.parse_args()
 
 
@@ -105,7 +111,8 @@ def main() -> None:
         if file_changed and not args.dry_run:
             input_path.write_text(input_text)
         results.append((input_path, file_changed))
-    print_file_statuses(results)
+    if not args.quiet:
+        print_file_statuses(results)
 
 
 if __name__ == "__main__":

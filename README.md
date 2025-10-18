@@ -174,6 +174,11 @@ You can perform a dry run of your replacements using the `--dry-run` flag. This
 will simulate all replacements and report the results without actually writing
 any changes to disk.
 
+### Suppressing Output ("Quiet Mode")
+
+You can suppress all output (except for errors) using the `--quiet` or `-q`
+flag.
+
 ### More Examples
 
 To better understand the expected rules format and what's allowed, please see
