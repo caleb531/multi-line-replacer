@@ -31,6 +31,20 @@ class TestMLR(MLRTestCase):
             ),
         )
 
+    def test_dry_run(self) -> None:
+        """
+        Should not write changes to disk when --dry-run is specified
+        """
+        self.assert_file_replace(
+            dry_run=True,
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/editorconfig.md"],
+            output_filenames=["input/test.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')}"
+            ),
+        )
+
     def test_no_match(self) -> None:
         """
         Should leave the file untouched if no matches are found

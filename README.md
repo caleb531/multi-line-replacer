@@ -168,6 +168,12 @@ run: |
 ```
 ````
 
+### Dry Runs
+
+You can perform a dry run of your replacements using the `--dry-run` flag. This
+will simulate all replacements and report the results without actually writing
+any changes to disk.
+
 ### More Examples
 
 To better understand the expected rules format and what's allowed, please see

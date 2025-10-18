@@ -69,6 +69,7 @@ class MLRTestCase(unittest.TestCase):
         rule_filenames: Sequence[Union[str, Path]],
         output_filenames: Sequence[Union[str, Path]],
         expected_cli_message: Optional[Union[str, Path]] = None,
+        dry_run: bool = False,
     ) -> None:
         """
         A custom assertion that runs the CLI program with the specified
@@ -80,6 +81,7 @@ class MLRTestCase(unittest.TestCase):
                 "sys.argv",
                 [
                     __file__,
+                    *(["--dry-run"] if dry_run else []),
                     *(str(self.get_fixture_path(f)) for f in input_filenames),
                     "-r",
                     *(str(self.get_fixture_path(f)) for f in rule_filenames),

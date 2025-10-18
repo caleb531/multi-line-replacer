@@ -33,6 +33,12 @@ def get_cli_args() -> argparse.Namespace:
         type=ExpandedPath,
         help="One or more paths to replacement rule Markdown files. Each file should contain pairs of triple-backtick (```) fenced code blocks, where the first fenced block is the text to be replaced and the second fenced block is the replacement text.",  # noqa: E501
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Perform all replacements in memory without writing changes to "
+        "disk. Useful for testing which files would be changed.",
+    )
     return parser.parse_args()
 
 
@@ -96,7 +102,7 @@ def main() -> None:
             ):
                 input_text = replace_text(input_text, target_text, replacement_text)
         file_changed = orig_input_text != input_text
-        if file_changed:
+        if file_changed and not args.dry_run:
             input_path.write_text(input_text)
         results.append((input_path, file_changed))
     print_file_statuses(results)
