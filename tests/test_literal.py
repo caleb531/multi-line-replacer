@@ -41,7 +41,8 @@ class TestMLR(MLRTestCase):
             rule_filenames=["rules/editorconfig.md"],
             output_filenames=["input/test.editorconfig"],
             expected_cli_message=(
-                f"{self.get_fixture_path('input/test.editorconfig')}"
+                "Note: Dry run enabled; no files will be modified on disk.\n"
+                + f"{self.get_fixture_path('input/test.editorconfig')}"
             ),
         )
 

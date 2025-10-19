@@ -91,6 +91,17 @@ def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
             print(f"{path_obj} ({status_text})")
 
 
+def print_dry_run_message() -> None:
+    """
+    Print a dry run notice to the console to inform the user that modifications
+    will not be written to disk.
+    """
+    console = Console()
+    console.print(
+        "[yellow]Note:[/yellow] Dry run enabled; no files will be modified on disk."
+    )
+
+
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
@@ -112,6 +123,8 @@ def main() -> None:
             input_path.write_text(input_text)
         results.append((input_path, file_changed))
     if not args.quiet:
+        if args.dry_run:
+            print_dry_run_message()
         print_file_statuses(results)
 
 
