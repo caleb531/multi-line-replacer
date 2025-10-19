@@ -93,9 +93,19 @@ class MLRTestCase(unittest.TestCase):
         ):
             main()
             for input_file, output_file in zip(input_filenames, output_filenames):
+                input_path = self.get_fixture_path(input_file)
+                # For some tests, the expectation is that no file modifications
+                # are made, so the output path is set to be the same as the
+                # input path; however, in order for this to work, the output
+                # file must be sourced from the project directory rather than
+                # the temporary fixture directory; otherwise, the input/output
+                # paths could be equal and the assertion would always pass in
+                # this circumstance
+                output_path = self.get_project_path(output_file)
+                self.assertNotEqual(output_path, input_path)
                 self.assertEqual(
-                    self.get_project_path(output_file).read_text(),
-                    self.get_fixture_path(input_file).read_text(),
+                    output_path.read_text(),
+                    input_path.read_text(),
                 )
             if expected_cli_message is not None:
                 self.assertEqual(expected_cli_message, out.getvalue().strip())
