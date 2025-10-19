@@ -63,13 +63,26 @@ class TestConsoleOutput(MLRTestCase):
             ),
         )
 
-    @patch("mlr.__main__.Console", FakeConsole)
     def test_quiet_mode(self) -> None:
-        """Should output both changed and unchanged files within a terminal."""
+        """Should not output anything when --quiet/-q is passed."""
         self.assert_file_replace(
             quiet=True,
             input_filenames=["input/lint.yml", "input/publish.yml"],
             rule_filenames=["rules/ruff.md"],
             output_filenames=["output/lint-ruff.yml", "input/publish.yml"],
+            expected_cli_message="",
+        )
+
+    def test_quiet_mode_dry_run(self) -> None:
+        """
+        Should still not output anything when dry run mode and quiet mode are
+        enabled.
+        """
+        self.assert_file_replace(
+            quiet=True,
+            dry_run=True,
+            input_filenames=["input/lint.yml", "input/publish.yml"],
+            rule_filenames=["rules/ruff.md"],
+            output_filenames=["input/lint.yml", "input/publish.yml"],
             expected_cli_message="",
         )
