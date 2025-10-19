@@ -16,17 +16,17 @@ def extract_code_blocks_from_md_text(md_text: str) -> list[str]:
     a list, where each list item represents the contents of that code block
     (minus any optional language specifier)
     """
-    code_blocks = re.findall(
-        r"```(?:[\w\-]*)\n(|.*?\n)```",
+    code_block_matches = re.findall(
+        r"((?:`|~){3,})(?:[\w\-]*)\n(|.*?\n)\1",
         md_text,
         flags=re.DOTALL,
     )
     # If number of code blocks is not even
-    if len(code_blocks) % 2 != 0:
+    if len(code_block_matches) % 2 != 0:
         raise CodeBlocksMismatched(
             "Replacement file must have an even number of fenced code blocks."
         )
-    return code_blocks
+    return [matches[1] for matches in code_block_matches]
 
 
 def get_indent_unit(text: str) -> Optional[str]:

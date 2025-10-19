@@ -45,6 +45,19 @@ class TestMLR(MLRTestCase):
             ),
         )
 
+    def test_tilde_code_fences(self) -> None:
+        """
+        Should handle code blocks fenced by tildes (~) instead of backticks (`)
+        """
+        self.assert_file_replace(
+            input_filenames=["input/test.editorconfig"],
+            rule_filenames=["rules/editorconfig-tildes.md"],
+            output_filenames=["output/test.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.editorconfig')}"
+            ),
+        )
+
     def test_no_match(self) -> None:
         """
         Should leave the file untouched if no matches are found
