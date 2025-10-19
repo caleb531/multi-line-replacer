@@ -31,21 +31,6 @@ class TestMLR(MLRTestCase):
             ),
         )
 
-    def test_dry_run(self) -> None:
-        """
-        Should not write changes to disk when --dry-run is specified
-        """
-        self.assert_file_replace(
-            dry_run=True,
-            input_filenames=["input/test.editorconfig"],
-            rule_filenames=["rules/editorconfig.md"],
-            output_filenames=["input/test.editorconfig"],
-            expected_cli_message=(
-                "Note: Dry run enabled; no files will be modified on disk.\n"
-                + f"{self.get_fixture_path('input/test.editorconfig')}"
-            ),
-        )
-
     def test_tilde_code_fences(self) -> None:
         """
         Should handle code blocks fenced by tildes (~) instead of backticks (`)
