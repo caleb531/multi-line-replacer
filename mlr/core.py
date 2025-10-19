@@ -3,7 +3,7 @@ import os
 import re
 from typing import Optional
 
-from mlr.exceptions import CodeBlocksMismatched
+from mlr.exceptions import CodeBlocksMismatched, TargetCodeBlockEmpty
 
 # The regular expression pattern used to represent a consecutive string of zero
 # or more indents at the beginnong of a particular line
@@ -26,7 +26,13 @@ def extract_code_blocks_from_md_text(md_text: str) -> list[str]:
         raise CodeBlocksMismatched(
             "Replacement file must have an even number of fenced code blocks."
         )
-    return [matches[1] for matches in code_block_matches]
+    # Access code block contents from backreferences
+    code_blocks = [matches[1] for matches in code_block_matches]
+    # Ensure that no target text code blocks are empty
+    for code_block in code_blocks[0::2]:
+        if code_block == "":
+            raise TargetCodeBlockEmpty("Target text code block cannot be empty.")
+    return code_blocks
 
 
 def get_indent_unit(text: str) -> Optional[str]:

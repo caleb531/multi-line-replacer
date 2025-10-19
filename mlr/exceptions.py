@@ -7,6 +7,12 @@ class MLRException(Exception):
     pass
 
 
+class TargetCodeBlockEmpty(MLRException):
+    """Exception raised the target text code block is empty."""
+
+    pass
+
+
 class CodeBlocksMismatched(MLRException):
     """Exception raised when there is an odd number of code blocks."""
 
