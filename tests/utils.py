@@ -99,7 +99,7 @@ class MLRTestCase(unittest.TestCase):
                 # input path; however, in order for this to work, the output
                 # file must be sourced from the project directory rather than
                 # the temporary fixture directory; otherwise, the input/output
-                # paths could be equal and the assertion would always pass in
+                # paths would be equal and the assertion would always pass in
                 # this circumstance
                 output_path = self.get_project_path(output_file)
                 self.assertNotEqual(output_path, input_path)
