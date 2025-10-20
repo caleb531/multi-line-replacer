@@ -23,3 +23,7 @@ tab_width = 4
 
 [*.crlf.*]
 end_of_line = crlf
+
+[*.no-trailing.*]
+insert_final_newline = false
+
