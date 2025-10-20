@@ -136,8 +136,8 @@ def main() -> None:
     args = get_cli_args()
     results: List[Tuple[ExpandedPath, bool]] = []
     for input_path in args.input_paths:
-        # Read once without translation to detect original EOLs
-        eol = get_line_ending_from_text(input_path.read_text(newline=""))
+        # Read once without translation to detect original line endings
+        orig_line_ending = get_line_ending_from_text(input_path.read_text(newline=""))
         # Read again with universal newlines for normalized processing
         orig_input_text = input_path.read_text(newline=None)
         input_text = orig_input_text
@@ -153,7 +153,7 @@ def main() -> None:
         file_changed = orig_input_text != input_text
         if file_changed and not args.dry_run:
             # Write translating in-memory "\n" back to the original file's EOLs
-            input_path.write_text(input_text, newline=eol)
+            input_path.write_text(input_text, newline=orig_line_ending)
         results.append((input_path, file_changed))
     if not args.quiet:
         if args.dry_run:
