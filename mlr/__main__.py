@@ -3,7 +3,7 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Protocol, Tuple, cast
 
 from rich.console import Console
 from rich.text import Style, Text
@@ -13,7 +13,14 @@ from mlr.exceptions import CodeBlocksMismatched, TargetCodeBlockEmpty
 from mlr.path import ExpandedPath
 
 
-def get_cli_args() -> argparse.Namespace:
+class CLIArgs(Protocol):
+    input_paths: list[ExpandedPath]
+    rule_paths: list[ExpandedPath]
+    dry_run: bool
+    quiet: bool
+
+
+def get_cli_args() -> CLIArgs:
     """Define and parse CLI arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -45,7 +52,7 @@ def get_cli_args() -> argparse.Namespace:
         action="store_true",
         help="Suppresses all output except for errors.",
     )
-    return parser.parse_args()
+    return cast(CLIArgs, parser.parse_args())
 
 
 def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
