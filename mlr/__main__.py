@@ -3,7 +3,6 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 from rich.console import Console
 from rich.text import Style, Text
@@ -81,7 +80,7 @@ def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
         sys.exit(1)
 
 
-def print_file_statuses(results: List[Tuple[ExpandedPath, bool]]) -> None:
+def print_file_statuses(results: list[tuple[ExpandedPath, bool]]) -> None:
     """Print each processed file path along with whether it changed.
 
     Output format (no color):
@@ -139,7 +138,7 @@ def get_line_ending_from_text(text: str) -> str:
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
-    results: List[Tuple[ExpandedPath, bool]] = []
+    results: list[tuple[ExpandedPath, bool]] = []
     for input_path in args.input_paths:
         # Read once without translation to detect original line endings
         orig_line_ending = get_line_ending_from_text(input_path.read_text(newline=""))
