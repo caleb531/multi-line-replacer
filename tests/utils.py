@@ -104,8 +104,11 @@ class MLRTestCase(unittest.TestCase):
                 output_path = self.get_project_path(output_file)
                 self.assertNotEqual(output_path, input_path)
                 self.assertEqual(
-                    output_path.read_text(),
-                    input_path.read_text(),
+                    # Compare raw text (including line endings) to ensure there
+                    # is an exact match between the modified input file and the
+                    # expected output
+                    output_path.read_text(newline=""),
+                    input_path.read_text(newline=""),
                 )
             if expected_cli_message is not None:
                 self.assertEqual(expected_cli_message, out.getvalue().strip())

@@ -31,6 +31,19 @@ class TestMLR(MLRTestCase):
             ),
         )
 
+    def test_crlf_files(self) -> None:
+        """
+        Should perform replacements correctly for files with CRLF line endings
+        """
+        self.assert_file_replace(
+            input_filenames=["input/test.crlf.editorconfig"],
+            rule_filenames=["rules/editorconfig.md"],
+            output_filenames=["output/test.crlf.editorconfig"],
+            expected_cli_message=(
+                f"{self.get_fixture_path('input/test.crlf.editorconfig')}"
+            ),
+        )
+
     def test_tilde_code_fences(self) -> None:
         """
         Should handle code blocks fenced by tildes (~) instead of backticks (`)

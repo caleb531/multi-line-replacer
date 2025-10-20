@@ -12,22 +12,16 @@ matching is supported, and replacements are indentation-aware.
 
 ## Installation
 
-You can install MLR via pip, *or* using your preferred package manager
-
-```sh
-# via pip
-pip3 install multi-line-replacer
-```
+You can install MLR via the [uv][uv] package manager:
 
 ```sh
 # via uv
 uv tool install multi-line-replacer
 ```
 
-```sh
-# via pipx
-pipx install multi-line-replacer
-```
+This tool requires Python 3.13 or newer, so if you install via uv, Python 3.13
+will automatically be installed for you (if you don't have it installed
+already).
 
 ## Usage
 

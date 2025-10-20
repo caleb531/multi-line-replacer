@@ -109,12 +109,30 @@ def print_dry_run_message() -> None:
     )
 
 
+line_endings = ("\r\n", "\n", "\r")
+
+
+def get_line_ending_from_text(text: str) -> str:
+    """
+    Choose a single EOL to preserve by inspecting the raw text.
+    Prefer CRLF if present, else LF, else CR.
+    Fallback to LF if no newline is found.
+    """
+    for line_ending in line_endings:
+        if line_ending in text:
+            return line_ending
+    return "\n"
+
+
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
     results: List[Tuple[ExpandedPath, bool]] = []
     for input_path in args.input_paths:
-        orig_input_text = input_path.read_text()
+        # Read once without translation to detect original EOLs
+        eol = get_line_ending_from_text(input_path.read_text(newline=""))
+        # Read again with universal newlines for normalized processing
+        orig_input_text = input_path.read_text(newline=None)
         input_text = orig_input_text
         # Apply each replacement rule to each input file
         for rule_path in args.rule_paths:
@@ -127,7 +145,8 @@ def main() -> None:
                 input_text = replace_text(input_text, target_text, replacement_text)
         file_changed = orig_input_text != input_text
         if file_changed and not args.dry_run:
-            input_path.write_text(input_text)
+            # Write translating in-memory "\n" back to the original file's EOLs
+            input_path.write_text(input_text, newline=eol)
         results.append((input_path, file_changed))
     if not args.quiet:
         if args.dry_run:
