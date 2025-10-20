@@ -116,7 +116,7 @@ def print_dry_run_message() -> None:
     """
     console = Console()
     console.print(
-        "[yellow]Note:[/yellow] Dry run enabled; no files will be modified on disk."
+        "[yellow]Note: Dry run enabled; no files will be modified on disk.[/yellow]"
     )
 
 
