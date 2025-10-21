@@ -66,8 +66,6 @@ def evaluate_wildcard_variables(text: str) -> str:
         "MATCH_SLUG": r"(\w[\w\-]*)",
         # Match digit characters
         "MATCH_DIGITS": r"(\d+)",
-        # Loosely match file paths
-        "MATCH_PATH": r"([\w\-\.~\/]+)",
     }
     for wildcard_var_name, replacement in wildcard_evaluations.items():
         text = text.replace(
