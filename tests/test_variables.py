@@ -42,6 +42,15 @@ class TestMLR(MLRTestCase):
             expected_cli_message=(f"{self.get_fixture_path('input/config.ini')}"),
         )
 
+    def test_match_digits(self) -> None:
+        """Should perform a replacement with MATCH_DIGITS"""
+        self.assert_file_replace(
+            input_filenames=["input/config.ini"],
+            rule_filenames=["rules/new-permissions.md"],
+            output_filenames=["output/new-permissions.ini"],
+            expected_cli_message=(f"{self.get_fixture_path('input/config.ini')}"),
+        )
+
     @use_env("PROJECT_PKG_NAME", "myproject")
     @use_env("PROJECT_BUILD_SYSTEM", "setuptools")
     @use_env("PROJECT_BUILD_BACKEND", "setuptools.build_meta")
