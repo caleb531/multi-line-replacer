@@ -74,7 +74,7 @@ exclude = ['build', 'dist']
 # Enable branch coverage
 branch = true
 # Only check coverage for source files
-include = ["mlr/*.py"]
+source = ["mlr"]
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
