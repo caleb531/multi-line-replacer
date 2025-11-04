@@ -2,38 +2,28 @@
 
 
 import importlib
-import os
-import os.path
-from pathlib import Path, WindowsPath
+from pathlib import WindowsPath
 from unittest.mock import patch
 
-from tests.utils import MLRTestCase
+from tests.utils import assert_file_replace, get_fixture_path
 
 
-class TestMLRPathExpansion(MLRTestCase):
+@patch("sys.platform", "win32")
+def test_windows_detection() -> None:
     """
-    Test expanding ~ to the user's home directory within paths supplied to MLR
+    Should detect when the host system is Windows and therefore should use
+    Windows-native paths (as opposed to POSIX paths)
     """
+    path = importlib.import_module("mlr.path")
+    importlib.reload(path)
+    assert path.BasePath == WindowsPath
 
-    temp_dir_path = Path(os.path.expanduser("~")) / ".cache" / "mlr-test-data"
 
-    @patch("sys.platform", "win32")
-    def test_windows_detection(self) -> None:
-        """
-        Should detect when the host system is Windows and therefore should use
-        Windows-native paths (as opposed to POSIX paths)
-        """
-        path = importlib.import_module("mlr.path")
-        importlib.reload(path)
-        self.assertEqual(path.BasePath, WindowsPath)
-
-    def test_literal_replacement_expansion(self) -> None:
-        """Should perform a literal textual replacement (with ~ expansion)"""
-        self.assert_file_replace(
-            input_filenames=["input/test.editorconfig"],
-            rule_filenames=["rules/editorconfig.md"],
-            output_filenames=["output/test.editorconfig"],
-            expected_cli_message=(
-                f"{self.get_fixture_path('input/test.editorconfig')}"
-            ),
-        )
+def test_literal_replacement_expansion() -> None:
+    """Should perform a literal textual replacement (with ~ expansion)"""
+    assert_file_replace(
+        input_filenames=["input/test.editorconfig"],
+        rule_filenames=["rules/editorconfig.md"],
+        output_filenames=["output/test.editorconfig"],
+        expected_cli_message=(f"{get_fixture_path('input/test.editorconfig')}"),
+    )
