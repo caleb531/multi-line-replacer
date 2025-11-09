@@ -9,7 +9,7 @@ from rich.text import Style, Text
 
 from mlr.core import extract_code_blocks_from_md_text, replace_text
 from mlr.exceptions import CodeBlocksMismatched, TargetCodeBlockEmpty
-from mlr.path import ExpandedPath
+from mlr.path import ExpandedPath, read_text, write_text
 
 
 class CLIArgs(argparse.Namespace):
@@ -141,9 +141,9 @@ def main() -> None:
     results: list[tuple[ExpandedPath, bool]] = []
     for input_path in args.input_paths:
         # Read once without translation to detect original line endings
-        orig_line_ending = get_line_ending_from_text(input_path.read_text(newline=""))
+        orig_line_ending = get_line_ending_from_text(read_text(input_path, newline=""))
         # Read again with universal newlines for normalized processing
-        orig_input_text = input_path.read_text(newline=None)
+        orig_input_text = read_text(input_path)
         input_text = orig_input_text
         # Apply each replacement rule to each input file
         for rule_path in args.rule_paths:
@@ -156,8 +156,7 @@ def main() -> None:
                 input_text = replace_text(input_text, target_text, replacement_text)
         file_changed = orig_input_text != input_text
         if file_changed and not args.dry_run:
-            # Write translating in-memory "\n" back to the original file's EOLs
-            input_path.write_text(input_text, newline=orig_line_ending)
+            write_text(input_path, input_text, newline=orig_line_ending)
         results.append((input_path, file_changed))
     if not args.quiet:
         if args.dry_run:

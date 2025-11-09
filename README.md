@@ -19,9 +19,7 @@ You can install MLR via the [uv][uv] package manager:
 uv tool install multi-line-replacer
 ```
 
-This tool requires Python 3.13 or newer, so if you install via uv, Python 3.13
-will automatically be installed for you (if you don't have it installed
-already).
+This tool requires Python 3.9 or newer.
 
 ## Usage
 

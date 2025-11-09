@@ -12,6 +12,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 from unittest.mock import patch
 
 from mlr.__main__ import main
+from mlr.path import read_text
 
 # The temporary working directory in which the tests can safely perform file
 # modifications
@@ -83,7 +84,7 @@ def assert_file_replace(
                 # Compare raw text (including line endings) to ensure there
                 # is an exact match between the modified input file and the
                 # expected output
-                output_path.read_text(newline="") == input_path.read_text(newline="")
+                read_text(output_path, newline="") == read_text(input_path, newline="")
             )
         if expected_cli_message is not None:
             assert expected_cli_message == out.getvalue().strip()
