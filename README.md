@@ -69,8 +69,8 @@ There are two special wildcard variables:
 - `MATCH_ALL_BETWEEN` (`(.*?)`, where `.` matches anything including newlines)
 
 These variables can be used anywhere in any code block representing the target
-text to match. Because these names are unique enough, word boundaries are not
-required around them (e.g. `vMATCH_UNTIL_END_OF_LINE` is allowed).
+text to match. Word boundaries are not required around them (e.g.
+`vMATCH_UNTIL_END_OF_LINE` is allowed).
 
 ### Environment Variables
 
