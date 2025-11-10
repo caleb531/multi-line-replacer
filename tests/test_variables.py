@@ -23,36 +23,6 @@ def test_match_all_between() -> None:
     )
 
 
-def test_match_word() -> None:
-    """Should perform a replacement with MATCH_WORD"""
-    assert_file_replace(
-        input_filenames=["input/config.ini"],
-        rule_filenames=["rules/new-module.md"],
-        output_filenames=["output/new-module.ini"],
-        expected_cli_message=(f"{get_fixture_path('input/config.ini')}"),
-    )
-
-
-def test_match_slug() -> None:
-    """Should perform a replacement with MATCH_SLUG"""
-    assert_file_replace(
-        input_filenames=["input/config.ini"],
-        rule_filenames=["rules/new-package.md"],
-        output_filenames=["output/new-package.ini"],
-        expected_cli_message=(f"{get_fixture_path('input/config.ini')}"),
-    )
-
-
-def test_match_digits() -> None:
-    """Should perform a replacement with MATCH_DIGITS"""
-    assert_file_replace(
-        input_filenames=["input/config.ini"],
-        rule_filenames=["rules/new-permissions.md"],
-        output_filenames=["output/new-permissions.ini"],
-        expected_cli_message=(f"{get_fixture_path('input/config.ini')}"),
-    )
-
-
 @use_env("PROJECT_PKG_NAME", "myproject")
 @use_env("PROJECT_BUILD_SYSTEM", "setuptools")
 @use_env("PROJECT_BUILD_BACKEND", "setuptools.build_meta")

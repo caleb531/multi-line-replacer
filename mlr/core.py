@@ -60,12 +60,6 @@ def evaluate_wildcard_variables(text: str) -> str:
         "MATCH_UNTIL_END_OF_LINE": r"([^\n]*)",
         # Match all non-newline characters between two delimiters (like quotes)
         "MATCH_ALL_BETWEEN": r"(.*?)",
-        # Match word (letters, digits, and underscores)
-        "MATCH_WORD": r"(\w+)",
-        # Match slug (word characters, hyphens)
-        "MATCH_SLUG": r"(\w[\w\-]*)",
-        # Match digit characters
-        "MATCH_DIGITS": r"(\d+)",
     }
     for wildcard_var_name, replacement in wildcard_evaluations.items():
         text = text.replace(
