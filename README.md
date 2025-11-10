@@ -171,6 +171,10 @@ any changes to disk.
 You can suppress all output (except for errors) using the `--quiet` or `-q`
 flag.
 
+### Line Ending Handling
+
+The tool supports Unix (LF) and Windows (CRLF) line endings. If a file contains mixed line endings, all line endings in the file are normalized to use whichever line ending appeared first in the file.
+
 ### More Examples
 
 To better understand the expected rules format and what's allowed, please see
