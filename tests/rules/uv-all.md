@@ -104,10 +104,8 @@
 ## uv run coverage
 
 ```yml
-- name: Test with nose2
-  run: |
-    uv run coverage run -m nose2
-    uv run coverage lcov -o cover/coverage.lcov
+- name: Test with pytest
+  run: uv run pytest --cov --cov-report=lcov:cover/coverage.lcov
 ```
 
 ## mypy

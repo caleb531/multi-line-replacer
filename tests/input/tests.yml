@@ -32,7 +32,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Test with nose2
+    - name: Test with pytest
       run: uv run pytest --cov --cov-report=lcov:cover/coverage.lcov
 
     - name: Coveralls
