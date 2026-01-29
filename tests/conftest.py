@@ -10,6 +10,10 @@ from typing import Generator
 
 import pytest
 
+# Ensure that assertions within the test utils module are also rewritten to
+# provide useful debug information
+pytest.register_assert_rewrite("tests.utils")
+
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_test_fixtures() -> Generator[None, None, None]:
