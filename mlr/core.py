@@ -96,7 +96,7 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
         (
             evaluate_wildcard_variables(
                 evaluate_environment_variables(
-                    rf"{INDENTATION_PATT}{re.escape(line.strip())}"
+                    rf"^{INDENTATION_PATT}{re.escape(line.strip())}$"
                 )
             )
             if line
@@ -113,7 +113,7 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
     base_indent_matches = re.search(
         replace_this_patt.replace(INDENTATION_PATT, rf"({INDENTATION_PATT})", 1),
         input_text,
-        flags=re.DOTALL,
+        flags=re.DOTALL | re.MULTILINE,
     )
     if not base_indent_matches:
         return input_text  # No match found, return original text
@@ -142,6 +142,6 @@ def replace_text(input_text: str, target_text: str, replacement_text: str) -> st
             evaluate_backreferences(replacement_text),
         ),
         input_text,
-        flags=re.DOTALL,
+        flags=re.DOTALL | re.MULTILINE,
     )
     return input_text
