@@ -1,0 +1,7 @@
+[tool.ruff.lint]
+select = [
+  "F401",
+  "F403",
+  "PERF",
+  "ANN001",
+]

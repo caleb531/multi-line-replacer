@@ -23,6 +23,21 @@ def test_match_all_between() -> None:
     )
 
 
+def test_match_all_between_multiline() -> None:
+    """
+    Should perform a replacement with MATCH_ALL_BETWEEN where the wildcard
+    match spans multiple lines
+    """
+    assert_file_replace(
+        input_filenames=["input/pyproject-ruff-multiline.toml"],
+        rule_filenames=["rules/pyproject-ruff-multiline.md"],
+        output_filenames=["output/pyproject-ruff-multiline.toml"],
+        expected_cli_message=(
+            f"{get_fixture_path('input/pyproject-ruff-multiline.toml')}"
+        ),
+    )
+
+
 @use_env("PROJECT_PKG_NAME", "myproject")
 @use_env("PROJECT_BUILD_SYSTEM", "setuptools")
 @use_env("PROJECT_BUILD_BACKEND", "setuptools.build_meta")
