@@ -13,7 +13,7 @@ from mlr.exceptions import CodeBlocksMismatched, TargetCodeBlockEmpty
 from mlr.path import ExpandedPath, read_text, write_text
 
 
-class CLIArgs(argparse.Namespace):
+class CLIArgs(object):
     """
     A subclass of argparse.Namespace that exposes type information for all CLI
     arguments supported by the program
