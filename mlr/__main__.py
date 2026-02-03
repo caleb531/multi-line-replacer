@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import importlib.metadata
 import sys
 from pathlib import Path
 
@@ -22,6 +23,16 @@ class CLIArgs(argparse.Namespace):
     rule_paths: list[ExpandedPath]
     dry_run: bool
     quiet: bool
+
+
+def get_package_version() -> str:
+    """
+    Retrieve the current package version from the project metadata
+    """
+    try:
+        return importlib.metadata.version("multi-line-replacer")
+    except importlib.metadata.PackageNotFoundError:
+        return "0.0.0"
 
 
 def get_cli_args() -> CLIArgs:
@@ -55,6 +66,11 @@ def get_cli_args() -> CLIArgs:
         "-q",
         action="store_true",
         help="Suppresses all output except for errors.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {get_package_version()}",
     )
     return parser.parse_args(namespace=CLIArgs())
 
