@@ -36,10 +36,10 @@ def get_cli_args() -> CLIArgs:
     )
     parser.add_argument(
         "-r",
-        "--rules",
+        "--rule",
         metavar="RULE_FILE",
         dest="rule_paths",
-        nargs="+",
+        action="append",
         required=True,
         type=ExpandedPath,
         help="One or more paths to replacement rule Markdown files. Each file should contain pairs of triple-backtick (```) fenced code blocks, where the first fenced block is the text to be replaced and the second fenced block is the replacement text.",  # noqa: E501

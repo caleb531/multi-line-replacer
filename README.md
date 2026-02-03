@@ -23,11 +23,16 @@ This tool requires Python 3.9 or newer.
 
 ## Usage
 
-The workflow takes one or more files on which to run replacements, and then one
-or more "replacement rule" files with the `-r` flag:
+The workflow takes one or more files on which to run replacements, and then a
+"replacement rule" file with the `--rule` / `-r` flag. You can specify multiple
+rule files by repeating the `--rule` / `-r` flag.
 
 ```sh
-mlr .github/workflows/*.yml -r example-rules/uv-gha.md
+mlr .github/workflows/*.yml --rule example-rules/uv-gha.md
+```
+
+```sh
+mlr .github/workflows/*.yml -r example-rules/uv-gha.md -r example-rules/ruff-gha.md
 ```
 
 Each replacement rule must be a Markdown file with one or more pairs of GFM

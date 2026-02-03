@@ -62,8 +62,11 @@ def assert_file_replace(
                 *(["--dry-run"] if dry_run else []),
                 *(["--quiet"] if quiet else []),
                 *(str(get_fixture_path(f)) for f in input_filenames),
-                "-r",
-                *(str(get_fixture_path(f)) for f in rule_filenames),
+                *[
+                    arg
+                    for rule_filename in rule_filenames
+                    for arg in ("-r", str(get_fixture_path(rule_filename)))
+                ],
             ],
         ),
         contextlib.redirect_stdout(out),
