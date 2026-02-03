@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import importlib
 from pathlib import WindowsPath
 from unittest.mock import patch
