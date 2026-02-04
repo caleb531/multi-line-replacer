@@ -171,6 +171,11 @@ You can perform a dry run of your replacements using the `--dry-run` flag. This
 will simulate all replacements and report the results without actually writing
 any changes to disk.
 
+### Showing Diffs
+
+You can view a unified diff of all changes using the `--show-diff` flag. This is
+especially useful when checking what changes would be made during a dry run.
+
 ### Suppressing Output ("Quiet Mode")
 
 You can suppress all output (except for errors) using the `--quiet` or `-q`
