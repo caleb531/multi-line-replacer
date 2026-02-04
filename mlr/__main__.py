@@ -105,6 +105,21 @@ def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
         sys.exit(1)
 
 
+def apply_replacement_rules(input_text: str, *, rule_paths: list[ExpandedPath]) -> str:
+    """
+    Apply all replacement rules from the given rule files to the input text,
+    returning the final modified text
+    """
+    # Apply each replacement rule to each input file
+    for rule_path in rule_paths:
+        code_blocks = extract_code_blocks_from_md_path(rule_path)
+        # Enumerate fenced code blocks in pairs to get each pair of
+        # target/replacement rules
+        for target_text, replacement_text in zip(code_blocks[0::2], code_blocks[1::2]):
+            input_text = replace_text(input_text, target_text, replacement_text)
+    return input_text
+
+
 def print_file_statuses(
     console: Console, results: list[tuple[ExpandedPath, bool]]
 ) -> None:
@@ -195,11 +210,10 @@ def main() -> None:
             # Check for directories, since the tool is only intended for files
             # or glob patterns
             if input_path.is_dir():
-                if not args.quiet:
-                    warnings.append(
-                        f"Warning: Skipping {input_path}: directories are "
-                        "not supported (use a glob pattern like 'dir/*.txt')",
-                    )
+                warnings.append(
+                    f"Warning: Skipping {input_path}: directories are "
+                    "not supported (use a glob pattern like 'dir/*.txt')",
+                )
                 continue
             try:
                 # Read once without translation to detect original line endings
@@ -209,22 +223,14 @@ def main() -> None:
                 # Read again with universal newlines for normalized processing
                 orig_input_text = read_text(input_path)
             except UnicodeDecodeError:
-                if not args.quiet:
-                    warnings.append(
-                        f"Warning: Skipping {input_path}: not a valid text file",
-                    )
+                warnings.append(
+                    f"Warning: Skipping {input_path}: not a valid text file",
+                )
                 continue
 
-            input_text = orig_input_text
-            # Apply each replacement rule to each input file
-            for rule_path in args.rule_paths:
-                code_blocks = extract_code_blocks_from_md_path(rule_path)
-                # Enumerate fenced code blocks in pairs to get each pair of
-                # target/replacement rules
-                for target_text, replacement_text in zip(
-                    code_blocks[0::2], code_blocks[1::2]
-                ):
-                    input_text = replace_text(input_text, target_text, replacement_text)
+            input_text = apply_replacement_rules(
+                orig_input_text, rule_paths=args.rule_paths
+            )
             file_changed = orig_input_text != input_text
             if file_changed:
                 if args.show_diff:
