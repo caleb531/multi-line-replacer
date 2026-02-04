@@ -240,10 +240,10 @@ def main() -> None:
             results.append((input_path, file_changed))
 
     if not args.quiet:
-        for warning in warnings:
-            print(warning, file=sys.stderr)
         if args.dry_run:
             print_dry_run_message(console)
+        for warning in warnings:
+            print(warning, file=sys.stderr)
         print_file_statuses(console, results)
 
 
