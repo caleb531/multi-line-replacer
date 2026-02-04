@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import contextlib
 import difflib
 import importlib.metadata
 import sys
@@ -104,7 +105,9 @@ def extract_code_blocks_from_md_path(md_path: Path) -> list[str]:
         sys.exit(1)
 
 
-def print_file_statuses(results: list[tuple[ExpandedPath, bool]]) -> None:
+def print_file_statuses(
+    console: Console, results: list[tuple[ExpandedPath, bool]]
+) -> None:
     """Print each processed file path along with whether it changed.
 
     Output format (no color):
@@ -117,23 +120,20 @@ def print_file_statuses(results: list[tuple[ExpandedPath, bool]]) -> None:
     """
     # If rich is available and stdout is a terminal, use color; otherwise
     # fall back to plain print
-    console = Console()
     for path_obj, changed in results:
         status_text = "changed" if changed else "unchanged"
-        if console.is_terminal:
-            # Build styled text
-            color = Style(color=None) if changed else "dim"
-            txt = Text(str(path_obj), style=color)
-            if not changed:
-                txt.append(f" ({status_text})", style=color)
-            console.print(txt)
-        elif changed:
-            print(f"{path_obj}")
-        else:
-            print(f"{path_obj} ({status_text})")
+        # Build styled text whether we are in a terminal or not;
+        # Console will handle stripping styles if necessary
+        color = Style(color=None) if changed else "dim"
+        txt = Text(str(path_obj), style=color)
+        if not changed:
+            txt.append(f" ({status_text})", style=color)
+        console.print(txt, soft_wrap=True)
 
 
-def print_diff(input_path: ExpandedPath, original_text: str, new_text: str) -> None:
+def print_diff(
+    console: Console, input_path: ExpandedPath, original_text: str, new_text: str
+) -> None:
     """
     Print a syntax-highlighted unified diff of the changes to the console.
     """
@@ -146,16 +146,21 @@ def print_diff(input_path: ExpandedPath, original_text: str, new_text: str) -> N
         )
     )
     diff_text = "".join(diff_lines)
-    syntax = Syntax(diff_text, "diff", theme="monokai", word_wrap=True)
-    Console().print(syntax)
+    syntax = Syntax(
+        diff_text,
+        "diff",
+        theme="monokai",
+        word_wrap=True,
+        background_color="default",
+    )
+    console.print(syntax)
 
 
-def print_dry_run_message() -> None:
+def print_dry_run_message(console: Console) -> None:
     """
     Print a dry run notice to the console to inform the user that modifications
     will not be written to disk.
     """
-    console = Console()
     console.print(
         "[yellow]Note: Dry run enabled; no files will be modified on disk.[/yellow]"
     )
@@ -180,54 +185,60 @@ def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
     results: list[tuple[ExpandedPath, bool]] = []
+    warnings: list[str] = []
 
-    for input_path in args.input_paths:
-        # Check for directories, since the tool is only intended for files or
-        # glob patterns
-        if input_path.is_dir():
-            if not args.quiet:
-                print(
-                    f"Warning: Skipping {input_path}: directories are "
-                    "not supported (use a glob pattern like 'dir/*.txt')",
-                    file=sys.stderr,
-                )
-            continue
-        try:
-            # Read once without translation to detect original line endings
-            orig_line_ending = get_line_ending_from_text(
-                read_text(input_path, newline="")
-            )
-            # Read again with universal newlines for normalized processing
-            orig_input_text = read_text(input_path)
-        except UnicodeDecodeError:
-            if not args.quiet:
-                print(
-                    f"Warning: Skipping {input_path}: not a valid text file",
-                    file=sys.stderr,
-                )
-            continue
+    console = Console()
+    pager = console.pager(styles=True) if args.show_diff else contextlib.nullcontext()
 
-        input_text = orig_input_text
-        # Apply each replacement rule to each input file
-        for rule_path in args.rule_paths:
-            code_blocks = extract_code_blocks_from_md_path(rule_path)
-            # Enumerate fenced code blocks in pairs to get each pair of
-            # target/replacement rules
-            for target_text, replacement_text in zip(
-                code_blocks[0::2], code_blocks[1::2]
-            ):
-                input_text = replace_text(input_text, target_text, replacement_text)
-        file_changed = orig_input_text != input_text
-        if file_changed:
-            if args.show_diff:
-                print_diff(input_path, orig_input_text, input_text)
-            if not args.dry_run:
-                write_text(input_path, input_text, newline=orig_line_ending)
-        results.append((input_path, file_changed))
+    with pager:
+        for input_path in args.input_paths:
+            # Check for directories, since the tool is only intended for files
+            # or glob patterns
+            if input_path.is_dir():
+                if not args.quiet:
+                    warnings.append(
+                        f"Warning: Skipping {input_path}: directories are "
+                        "not supported (use a glob pattern like 'dir/*.txt')",
+                    )
+                continue
+            try:
+                # Read once without translation to detect original line endings
+                orig_line_ending = get_line_ending_from_text(
+                    read_text(input_path, newline="")
+                )
+                # Read again with universal newlines for normalized processing
+                orig_input_text = read_text(input_path)
+            except UnicodeDecodeError:
+                if not args.quiet:
+                    warnings.append(
+                        f"Warning: Skipping {input_path}: not a valid text file",
+                    )
+                continue
+
+            input_text = orig_input_text
+            # Apply each replacement rule to each input file
+            for rule_path in args.rule_paths:
+                code_blocks = extract_code_blocks_from_md_path(rule_path)
+                # Enumerate fenced code blocks in pairs to get each pair of
+                # target/replacement rules
+                for target_text, replacement_text in zip(
+                    code_blocks[0::2], code_blocks[1::2]
+                ):
+                    input_text = replace_text(input_text, target_text, replacement_text)
+            file_changed = orig_input_text != input_text
+            if file_changed:
+                if args.show_diff:
+                    print_diff(console, input_path, orig_input_text, input_text)
+                if not args.dry_run:
+                    write_text(input_path, input_text, newline=orig_line_ending)
+            results.append((input_path, file_changed))
+
     if not args.quiet:
+        for warning in warnings:
+            print(warning, file=sys.stderr)
         if args.dry_run:
-            print_dry_run_message()
-        print_file_statuses(results)
+            print_dry_run_message(console)
+        print_file_statuses(console, results)
 
 
 if __name__ == "__main__":

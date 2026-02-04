@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from typing import Union
+import contextlib
+from typing import Iterator, Union
 from unittest.mock import patch
 
 from rich.syntax import Syntax
@@ -16,7 +17,11 @@ class FakeConsole:
 
     is_terminal = True
 
-    def print(self, obj: Union[Text, Syntax, str]) -> None:
+    @contextlib.contextmanager
+    def pager(self, styles: bool = True) -> Iterator[None]:
+        yield
+
+    def print(self, obj: Union[Text, Syntax, str], **kwargs: object) -> None:
         if isinstance(obj, Syntax):
             print(obj.code)
         elif isinstance(obj, str):
