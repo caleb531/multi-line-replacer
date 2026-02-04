@@ -158,3 +158,78 @@ def test_binary_file_skip() -> None:
         )
         assert "Skipping" in args_concatenated
         assert str(binary_file) in args_concatenated
+
+
+@patch("mlr.__main__.Console", FakeConsole)
+def test_directory_skip_warning() -> None:
+    """
+    Should skip directories with a warning.
+    """
+    directory_path = get_fixture_path("some_dir")
+    directory_path.mkdir(parents=True, exist_ok=True)
+
+    with patch("sys.stderr") as mock_stderr:
+        assert_file_replace(
+            cli_input_paths=[directory_path],
+            input_filenames=[],
+            output_filenames=[],
+            rule_filenames=["rules/ruff.md"],
+            dry_run=True,
+            expected_cli_message=(
+                "Note: Dry run enabled; no files will be modified on disk."
+            ),
+        )
+        args_concatenated = "".join(
+            call.args[0] for call in mock_stderr.write.call_args_list if call.args
+        )
+        assert "Warning: Skipping" in args_concatenated
+        assert str(directory_path) in args_concatenated
+        assert "directories are not supported" in args_concatenated
+
+
+@patch("mlr.__main__.Console", FakeConsole)
+def test_binary_file_skip_quiet() -> None:
+    """
+    Should skip binary files silently when quiet mode is enabled.
+    """
+    binary_file_path = get_fixture_path("binary_quiet.bin")
+    binary_file_path.write_bytes(b"\x96\x00\x00")
+
+    with patch("sys.stderr") as mock_stderr:
+        assert_file_replace(
+            cli_input_paths=[binary_file_path],
+            input_filenames=[],
+            output_filenames=[],
+            rule_filenames=["rules/ruff.md"],
+            dry_run=True,
+            quiet=True,
+            expected_cli_message="",
+        )
+        args_concatenated = "".join(
+            call.args[0] for call in mock_stderr.write.call_args_list if call.args
+        )
+        assert args_concatenated == ""
+
+
+@patch("mlr.__main__.Console", FakeConsole)
+def test_directory_skip_quiet() -> None:
+    """
+    Should skip directories silently when quiet mode is enabled.
+    """
+    directory_path = get_fixture_path("some_dir_quiet")
+    directory_path.mkdir(parents=True, exist_ok=True)
+
+    with patch("sys.stderr") as mock_stderr:
+        assert_file_replace(
+            cli_input_paths=[directory_path],
+            input_filenames=[],
+            output_filenames=[],
+            rule_filenames=["rules/ruff.md"],
+            dry_run=True,
+            quiet=True,
+            expected_cli_message="",
+        )
+        args_concatenated = "".join(
+            call.args[0] for call in mock_stderr.write.call_args_list if call.args
+        )
+        assert args_concatenated == ""
