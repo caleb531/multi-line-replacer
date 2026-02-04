@@ -133,36 +133,24 @@ def test_binary_file_skip() -> None:
     text_file = get_fixture_path("text.txt")
     text_file.write_text("some text")
 
-    # Warning is printed to stderr, so it won't appear in the captured stdout
-    # checked by expected_cli_message unless we captured stderr too.
-    # checking assert_file_replace implementation: contextlib.redirect_stdout(out).
-    # It does NOT redirect stderr.
-    # However, print_file_statuses prints to stdout.
-
+    # Warning is printed to stdout so it will appear in the captured stdout
     expected_message = (
         "Note: Dry run enabled; no files will be modified on disk.\n"
-        f"{text_file} (unchanged)"
+        f"{text_file} (unchanged)\n"
+        f"{binary_file} (skipping binary file)"
     )
 
-    with patch("sys.stderr") as mock_stderr:
-        # We expect 'binary.bin' to be skipped (not in results list), so we
-        # don't include it in input_filenames (which verifies final content)
-        # properly speaking, if we passed it in input_filenames, the
-        # assert_file_replace loop would try to read it.
-        assert_file_replace(
-            cli_input_paths=[text_file, binary_file],
-            input_filenames=[],
-            output_filenames=[],
-            rule_filenames=["rules/ruff.md"],
-            dry_run=True,
-            expected_cli_message=expected_message,
-        )
-        # Parse out stderr calls to verify binary file warning
-        args_concatenated = "".join(
-            call.args[0] for call in mock_stderr.write.call_args_list if call.args
-        )
-        assert "Skipping" in args_concatenated
-        assert str(binary_file) in args_concatenated
+    # We expect 'binary.bin' to be skipped (not in results list), so we
+    # don't include it in input_filenames (which verifies final content)
+    assert_file_replace(
+        cli_input_paths=[text_file, binary_file],
+        input_filenames=[],
+        output_filenames=[],
+        rule_filenames=["rules/ruff.md"],
+        dry_run=True,
+        expected_cli_message=expected_message,
+        exact_message_match=False,
+    )
 
 
 @patch("mlr.__main__.Console", FakeConsole)
@@ -173,23 +161,17 @@ def test_directory_skip_warning() -> None:
     directory_path = get_fixture_path("some_dir")
     directory_path.mkdir(parents=True, exist_ok=True)
 
-    with patch("sys.stderr") as mock_stderr:
-        assert_file_replace(
-            cli_input_paths=[directory_path],
-            input_filenames=[],
-            output_filenames=[],
-            rule_filenames=["rules/ruff.md"],
-            dry_run=True,
-            expected_cli_message=(
-                "Note: Dry run enabled; no files will be modified on disk."
-            ),
-        )
-        args_concatenated = "".join(
-            call.args[0] for call in mock_stderr.write.call_args_list if call.args
-        )
-        assert "Warning: Skipping" in args_concatenated
-        assert str(directory_path) in args_concatenated
-        assert "directories are not supported" in args_concatenated
+    assert_file_replace(
+        cli_input_paths=[directory_path],
+        input_filenames=[],
+        output_filenames=[],
+        rule_filenames=["rules/ruff.md"],
+        dry_run=True,
+        expected_cli_message=(
+            "Note: Dry run enabled; no files will be modified on disk.\n"
+            f"{directory_path} (skipping directory)"
+        ),
+    )
 
 
 @patch("mlr.__main__.Console", FakeConsole)

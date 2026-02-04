@@ -6,6 +6,7 @@ import difflib
 import importlib.metadata
 import sys
 from pathlib import Path
+from typing import Union
 
 from rich.console import Console
 from rich.syntax import Syntax
@@ -120,30 +121,24 @@ def apply_replacement_rules(input_text: str, *, rule_paths: list[ExpandedPath]) 
     return input_text
 
 
-def print_file_statuses(
-    console: Console, results: list[tuple[ExpandedPath, bool]]
+def print_file_status(
+    console: Console,
+    path: ExpandedPath,
+    status: Union[str, None] = None,
+    style: Union[str, Style] = "dim",
 ) -> None:
-    """Print each processed file path along with whether it changed.
-
-    Output format (no color):
-        /abs/path/to/file.yml
-        /abs/path/to/other.yml (unchanged)
-
-    Colors (when rich + TTY available):
-        changed   -> default
-        unchanged -> dim
     """
-    # If rich is available and stdout is a terminal, use color; otherwise
-    # fall back to plain print
-    for path_obj, changed in results:
-        status_text = "changed" if changed else "unchanged"
-        # Build styled text whether we are in a terminal or not;
-        # Console will handle stripping styles if necessary
-        color = Style(color=None) if changed else "dim"
-        txt = Text(str(path_obj), style=color)
-        if not changed:
-            txt.append(f" ({status_text})", style=color)
-        console.print(txt, soft_wrap=True)
+    Print the status of a processed file.
+
+    Examples:
+        path/to/file.txt
+        path/to/file.txt (unchanged)
+        path/to/file.txt (skipping directory)
+    """
+    txt = Text(str(path), style=style)
+    if status:
+        txt.append(f" ({status})", style=style)
+    console.print(txt, soft_wrap=True)
 
 
 def print_diff(
@@ -199,21 +194,23 @@ def get_line_ending_from_text(text: str) -> str:
 def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
-    results: list[tuple[ExpandedPath, bool]] = []
-    warnings: list[str] = []
 
     console = Console()
     pager = console.pager(styles=True) if args.show_diff else contextlib.nullcontext()
+
+    # Print dry-run notice at the start so it is visible immediately/at top of pager
+    if args.dry_run and not args.quiet:
+        print_dry_run_message(console)
 
     with pager:
         for input_path in args.input_paths:
             # Check for directories, since the tool is only intended for files
             # or glob patterns
             if input_path.is_dir():
-                warnings.append(
-                    f"Warning: Skipping {input_path}: directories are "
-                    "not supported (use a glob pattern like 'dir/*.txt')",
-                )
+                if not args.quiet:
+                    print_file_status(
+                        console, input_path, "skipping directory", style="dim"
+                    )
                 continue
             try:
                 # Read once without translation to detect original line endings
@@ -223,28 +220,34 @@ def main() -> None:
                 # Read again with universal newlines for normalized processing
                 orig_input_text = read_text(input_path)
             except UnicodeDecodeError:
-                warnings.append(
-                    f"Warning: Skipping {input_path}: not a valid text file",
-                )
+                if not args.quiet:
+                    print_file_status(
+                        console, input_path, "skipping binary file", style="dim"
+                    )
                 continue
 
             input_text = apply_replacement_rules(
                 orig_input_text, rule_paths=args.rule_paths
             )
             file_changed = orig_input_text != input_text
+
             if file_changed:
                 if args.show_diff:
                     print_diff(console, input_path, orig_input_text, input_text)
+
                 if not args.dry_run:
                     write_text(input_path, input_text, newline=orig_line_ending)
-            results.append((input_path, file_changed))
 
-    if not args.quiet:
-        if args.dry_run:
-            print_dry_run_message(console)
-        for warning in warnings:
-            print(warning, file=sys.stderr)
-        print_file_statuses(console, results)
+                # Only print the filename (status) if we NOT showing the diff.
+                # If the diff is shown, the header implies the change.
+                if not args.quiet and not args.show_diff:
+                    # Changed files get default color and no status text
+                    print_file_status(
+                        console, input_path, status=None, style=Style(color=None)
+                    )
+            elif not args.quiet:
+                # Unchanged files get dim color and "unchanged" status text
+                print_file_status(console, input_path, "unchanged", style="dim")
 
 
 if __name__ == "__main__":
