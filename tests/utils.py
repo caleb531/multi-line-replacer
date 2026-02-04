@@ -47,21 +47,30 @@ def assert_file_replace(
     output_filenames: Sequence[Union[str, Path]],
     expected_cli_message: Optional[Union[str, Path]] = None,
     dry_run: bool = False,
+    show_diff: bool = False,
     quiet: bool = False,
+    cli_input_paths: Optional[Sequence[Union[str, Path]]] = None,
+    exact_message_match: bool = True,
 ) -> None:
     """
     A custom assertion that runs the CLI program with the specified
     parameters, and optionally checks the summary message from stdout
     """
     out = StringIO()
+    # If explicit CLI input paths are provided, use those for sys.argv;
+    # otherwise, default to the input filenames used for verification
+    if cli_input_paths is None:
+        cli_input_paths = input_filenames
+
     with (
         patch(
             "sys.argv",
             [
                 __file__,
                 *(["--dry-run"] if dry_run else []),
+                *(["--show-diff"] if show_diff else []),
                 *(["--quiet"] if quiet else []),
-                *(str(get_fixture_path(f)) for f in input_filenames),
+                *(str(get_fixture_path(f)) for f in cli_input_paths),
                 *[
                     arg
                     for rule_filename in rule_filenames
@@ -90,7 +99,10 @@ def assert_file_replace(
                 read_text(output_path, newline="") == read_text(input_path, newline="")
             )
         if expected_cli_message is not None:
-            assert expected_cli_message == out.getvalue().strip()
+            if exact_message_match:
+                assert str(expected_cli_message) == out.getvalue().strip()
+            else:
+                assert str(expected_cli_message) in out.getvalue().strip()
 
 
 class use_env(object):

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+import difflib
 import importlib.metadata
 import sys
 from pathlib import Path
 
 from rich.console import Console
+from rich.syntax import Syntax
 from rich.text import Style, Text
 
 from mlr.core import extract_code_blocks_from_md_text, replace_text
@@ -22,6 +24,7 @@ class CLIArgs(object):
     input_paths: list[ExpandedPath]
     rule_paths: list[ExpandedPath]
     dry_run: bool
+    show_diff: bool
     quiet: bool
 
 
@@ -60,6 +63,11 @@ def get_cli_args() -> CLIArgs:
         action="store_true",
         help="Perform all replacements in memory without writing changes to "
         "disk. Useful for testing which files would be changed.",
+    )
+    parser.add_argument(
+        "--show-diff",
+        action="store_true",
+        help="Show a unified diff of changes for each file.",
     )
     parser.add_argument(
         "--quiet",
@@ -125,6 +133,23 @@ def print_file_statuses(results: list[tuple[ExpandedPath, bool]]) -> None:
             print(f"{path_obj} ({status_text})")
 
 
+def print_diff(input_path: ExpandedPath, original_text: str, new_text: str) -> None:
+    """
+    Print a syntax-highlighted unified diff of the changes to the console.
+    """
+    diff_lines = list(
+        difflib.unified_diff(
+            original_text.splitlines(keepends=True),
+            new_text.splitlines(keepends=True),
+            fromfile=str(input_path),
+            tofile=str(input_path),
+        )
+    )
+    diff_text = "".join(diff_lines)
+    syntax = Syntax(diff_text, "diff", theme="monokai", word_wrap=True)
+    Console().print(syntax)
+
+
 def print_dry_run_message() -> None:
     """
     Print a dry run notice to the console to inform the user that modifications
@@ -155,11 +180,33 @@ def main() -> None:
     """The entry point for the `multi-line-replacer` / `mlr` CLI program"""
     args = get_cli_args()
     results: list[tuple[ExpandedPath, bool]] = []
+
     for input_path in args.input_paths:
-        # Read once without translation to detect original line endings
-        orig_line_ending = get_line_ending_from_text(read_text(input_path, newline=""))
-        # Read again with universal newlines for normalized processing
-        orig_input_text = read_text(input_path)
+        # Check for directories, since the tool is only intended for files or
+        # glob patterns
+        if input_path.is_dir():
+            if not args.quiet:
+                print(
+                    f"Warning: Skipping {input_path}: directories are "
+                    "not supported (use a glob pattern like 'dir/*.txt')",
+                    file=sys.stderr,
+                )
+            continue
+        try:
+            # Read once without translation to detect original line endings
+            orig_line_ending = get_line_ending_from_text(
+                read_text(input_path, newline="")
+            )
+            # Read again with universal newlines for normalized processing
+            orig_input_text = read_text(input_path)
+        except UnicodeDecodeError:
+            if not args.quiet:
+                print(
+                    f"Warning: Skipping {input_path}: not a valid text file",
+                    file=sys.stderr,
+                )
+            continue
+
         input_text = orig_input_text
         # Apply each replacement rule to each input file
         for rule_path in args.rule_paths:
@@ -171,8 +218,11 @@ def main() -> None:
             ):
                 input_text = replace_text(input_text, target_text, replacement_text)
         file_changed = orig_input_text != input_text
-        if file_changed and not args.dry_run:
-            write_text(input_path, input_text, newline=orig_line_ending)
+        if file_changed:
+            if args.show_diff:
+                print_diff(input_path, orig_input_text, input_text)
+            if not args.dry_run:
+                write_text(input_path, input_text, newline=orig_line_ending)
         results.append((input_path, file_changed))
     if not args.quiet:
         if args.dry_run:
