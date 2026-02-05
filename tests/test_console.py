@@ -22,13 +22,17 @@ class FakeConsole:
         yield
 
     def print(self, obj: Union[Text, Syntax, str], **kwargs: object) -> None:
+        end = str(kwargs.get("end", "\n"))
         if isinstance(obj, Syntax):
-            print(obj.code)
+            print(obj.code, end=end)
         elif isinstance(obj, str):
-            print(Text.from_markup(obj).plain)
+            if kwargs.get("markup") is False:
+                print(obj, end=end)
+            else:
+                print(Text.from_markup(obj).plain, end=end)
         else:
             text = getattr(obj, "plain", str(obj))
-            print(text)
+            print(text, end=end)
 
 
 def test_mixed_changed_and_unchanged_non_terminal() -> None:

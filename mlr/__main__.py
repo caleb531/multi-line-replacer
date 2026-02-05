@@ -8,13 +8,24 @@ import sys
 from pathlib import Path
 from typing import Union
 
+from pygments.lexers.diff import DiffLexer
+from pygments.token import Token
 from rich.console import Console
-from rich.syntax import Syntax
 from rich.text import Style, Text
 
 from mlr.core import extract_code_blocks_from_md_text, replace_text
 from mlr.exceptions import CodeBlocksMismatched, TargetCodeBlockEmpty
 from mlr.path import ExpandedPath, read_text, write_text
+
+# The colors used to syntax-highlight the unified diff output; each key
+# represents a pygments token type, and the value is the corresponding rich
+# style to apply to that token type when printing diffs to the console
+DIFF_TOKEN_STYLES = {
+    Token.Generic.Deleted: "red",
+    Token.Generic.Inserted: "green",
+    Token.Generic.Heading: "bold",
+    Token.Generic.Subheading: "cyan",
+}
 
 
 class CLIArgs(object):
@@ -145,7 +156,7 @@ def print_diff(
     console: Console, input_path: ExpandedPath, original_text: str, new_text: str
 ) -> None:
     """
-    Print a syntax-highlighted unified diff of the changes to the console.
+    Print a colored unified diff of the changes to the console.
     """
     diff_lines = list(
         difflib.unified_diff(
@@ -156,14 +167,16 @@ def print_diff(
         )
     )
     diff_text = "".join(diff_lines)
-    syntax = Syntax(
-        diff_text,
-        "diff",
-        theme="monokai",
-        word_wrap=True,
-        background_color="default",
-    )
-    console.print(syntax)
+    if not diff_text:
+        return
+
+    lexer = DiffLexer()
+    text = Text()
+
+    for token, value in lexer.get_tokens(diff_text):
+        text.append(value, style=DIFF_TOKEN_STYLES.get(token))
+
+    console.print(text)
 
 
 def print_dry_run_message(console: Console) -> None:
