@@ -60,6 +60,9 @@ select = [
     "I",
     # perflint
     "PERF",
+    # flake8-annotations
+    "ANN001",
+    "ANN201",
 ]
 
 # mypy
