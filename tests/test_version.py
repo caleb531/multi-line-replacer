@@ -6,12 +6,13 @@ import pathlib
 import sys
 from unittest.mock import patch
 
+import pytest
 import tomli
 
 from mlr.__main__ import main
 
 
-def test_version_matches_pyproject(capsys):
+def test_version_matches_pyproject(capsys: pytest.CaptureFixture) -> None:
     """
     The printed version should match the version in pyproject.toml
     """
@@ -26,7 +27,7 @@ def test_version_matches_pyproject(capsys):
     assert expected_version in captured.out
 
 
-def test_version_fallback(capsys):
+def test_version_fallback(capsys: pytest.CaptureFixture) -> None:
     """
     The version should default to 0.0.0 if the package metadata cannot be found
     """
