@@ -104,6 +104,7 @@ def test_quiet_mode_dry_run() -> None:
     )
 
 
+@patch("mlr.__main__.Console", FakeConsole)
 def test_show_diff() -> None:
     """
     Should show a unified diff of changes when --show-diff is passed.
@@ -112,18 +113,18 @@ def test_show_diff() -> None:
     input_path = get_fixture_path(input_filename)
 
     # Just check that the output contains the diff header
-    with patch("mlr.__main__.Console", FakeConsole):
-        assert_file_replace(
-            show_diff=True,
-            dry_run=True,
-            input_filenames=[input_filename],
-            rule_filenames=["rules/ruff.md"],
-            output_filenames=[input_filename],
-            expected_cli_message=f"--- {input_path}",
-            exact_message_match=False,
-        )
+    assert_file_replace(
+        show_diff=True,
+        dry_run=True,
+        input_filenames=[input_filename],
+        rule_filenames=["rules/ruff.md"],
+        output_filenames=[input_filename],
+        expected_cli_message=f"--- {input_path}",
+        exact_message_match=False,
+    )
 
 
+@patch("mlr.__main__.Console", FakeConsole)
 def test_show_diff_no_changes() -> None:
     """
     Should not show a diff if no changes were made, even if --show-diff is
@@ -132,18 +133,17 @@ def test_show_diff_no_changes() -> None:
     input_filename = "input/publish.yml"
     input_path = get_fixture_path(input_filename)
 
-    with patch("mlr.__main__.Console", FakeConsole):
-        assert_file_replace(
-            show_diff=True,
-            dry_run=True,
-            input_filenames=[input_filename],
-            rule_filenames=["rules/ruff.md"],
-            output_filenames=[input_filename],
-            expected_cli_message=(
-                "Note: Dry run enabled; no files will be modified on disk.\n"
-                f"{input_path} (unchanged)"
-            ),
-        )
+    assert_file_replace(
+        show_diff=True,
+        dry_run=True,
+        input_filenames=[input_filename],
+        rule_filenames=["rules/ruff.md"],
+        output_filenames=[input_filename],
+        expected_cli_message=(
+            "Note: Dry run enabled; no files will be modified on disk.\n"
+            f"{input_path} (unchanged)"
+        ),
+    )
 
 
 @patch("mlr.__main__.Console", FakeConsole)
