@@ -318,7 +318,7 @@ wheels = [
 
 [[package]]
 name = "multi-line-replacer"
-version = "2.0.0"
+version = "3.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "rich" },
