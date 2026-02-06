@@ -167,8 +167,6 @@ def print_diff(
         )
     )
     diff_text = "".join(diff_lines)
-    if not diff_text:
-        return
 
     lexer = DiffLexer()
     text = Text()
