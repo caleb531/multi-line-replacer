@@ -1,6 +1,6 @@
 # Multi-Line Replacer (mlr)
 
-*Copyright 2025 Caleb Evans*  
+*Copyright 2025-2026 Caleb Evans*  
 *Released under the MIT license*
 
 [![tests](https://github.com/caleb531/multi-line-replacer/actions/workflows/tests.yml/badge.svg)](https://github.com/caleb531/multi-line-replacer/actions/workflows/tests.yml)
