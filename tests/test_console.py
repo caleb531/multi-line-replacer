@@ -124,6 +124,28 @@ def test_show_diff() -> None:
         )
 
 
+def test_show_diff_no_changes() -> None:
+    """
+    Should not show a diff if no changes were made, even if --show-diff is
+    passed.
+    """
+    input_filename = "input/publish.yml"
+    input_path = get_fixture_path(input_filename)
+
+    with patch("mlr.__main__.Console", FakeConsole):
+        assert_file_replace(
+            show_diff=True,
+            dry_run=True,
+            input_filenames=[input_filename],
+            rule_filenames=["rules/ruff.md"],
+            output_filenames=[input_filename],
+            expected_cli_message=(
+                "Note: Dry run enabled; no files will be modified on disk.\n"
+                f"{input_path} (unchanged)"
+            ),
+        )
+
+
 @patch("mlr.__main__.Console", FakeConsole)
 def test_binary_file_skip() -> None:
     """
