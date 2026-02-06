@@ -41,6 +41,8 @@ represents the target text to replace, and every even code block represents the
 textual replacement. All other Markdown formatting is ignored, so feel free to
 add headings, explainer text, or anything else!
 
+[gfm-docs]: https://github.github.com/gfm/#fenced-code-blocks
+
 ````md
 This rule replaces flake8 with ruff in a Github Actions linting workflow.
 
@@ -189,8 +191,6 @@ The tool supports Unix (LF) and Windows (CRLF) line endings. If a file contains 
 
 To better understand the expected rules format and what's allowed, please see
 the `example-rules` directory.
-
-[gfm-docs]: https://github.github.com/gfm/#fenced-code-blocks
 
 ## About
 
