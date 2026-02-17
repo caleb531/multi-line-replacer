@@ -2,17 +2,18 @@
 
 import importlib
 from pathlib import WindowsPath
-from unittest.mock import patch
+
+from pytest_mock import MockerFixture
 
 from tests.utils import assert_file_replace, get_fixture_path
 
 
-@patch("sys.platform", "win32")
-def test_windows_detection() -> None:
+def test_windows_detection(mocker: MockerFixture) -> None:
     """
     Should detect when the host system is Windows and therefore should use
     Windows-native paths (as opposed to POSIX paths)
     """
+    mocker.patch("sys.platform", "win32")
     path = importlib.import_module("mlr.path")
     importlib.reload(path)
     assert path.BasePath == WindowsPath

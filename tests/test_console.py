@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import contextlib
 from typing import Iterator, Union
-from unittest.mock import patch
 
+from pytest_mock import MockerFixture
 from rich.syntax import Syntax
 from rich.text import Text
 
@@ -49,9 +49,9 @@ def test_mixed_changed_and_unchanged_non_terminal() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_mixed_changed_and_unchanged_terminal() -> None:
+def test_mixed_changed_and_unchanged_terminal(mocker: MockerFixture) -> None:
     """Should output both changed and unchanged files within a terminal."""
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     changed_path = get_fixture_path("input/lint.yml")
     unchanged_path = get_fixture_path("input/publish.yml")
     assert_file_replace(
@@ -104,11 +104,11 @@ def test_quiet_mode_dry_run() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_show_diff() -> None:
+def test_show_diff(mocker: MockerFixture) -> None:
     """
     Should show a unified diff of changes when --show-diff is passed.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     input_filename = "input/lint.yml"
     input_path = get_fixture_path(input_filename)
 
@@ -124,12 +124,12 @@ def test_show_diff() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_show_diff_no_changes() -> None:
+def test_show_diff_no_changes(mocker: MockerFixture) -> None:
     """
     Should not show a diff if no changes were made, even if --show-diff is
     passed.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     input_filename = "input/publish.yml"
     input_path = get_fixture_path(input_filename)
 
@@ -146,11 +146,11 @@ def test_show_diff_no_changes() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_binary_file_skip() -> None:
+def test_binary_file_skip(mocker: MockerFixture) -> None:
     """
     Should gracefully skip binary files with a warning.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     # Create a binary file
     binary_file = get_fixture_path("binary.bin")
     binary_file.write_bytes(b"\x96\x00\x00")
@@ -179,11 +179,11 @@ def test_binary_file_skip() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_directory_skip_warning() -> None:
+def test_directory_skip_warning(mocker: MockerFixture) -> None:
     """
     Should skip directories with a warning.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     directory_path = get_fixture_path("some_dir")
     directory_path.mkdir(parents=True, exist_ok=True)
 
@@ -200,49 +200,49 @@ def test_directory_skip_warning() -> None:
     )
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_binary_file_skip_quiet() -> None:
+def test_binary_file_skip_quiet(mocker: MockerFixture) -> None:
     """
     Should skip binary files silently when quiet mode is enabled.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     binary_file_path = get_fixture_path("binary_quiet.bin")
     binary_file_path.write_bytes(b"\x96\x00\x00")
 
-    with patch("sys.stderr") as mock_stderr:
-        assert_file_replace(
-            cli_input_paths=[binary_file_path],
-            input_filenames=[],
-            output_filenames=[],
-            rule_filenames=["rules/ruff.md"],
-            dry_run=True,
-            quiet=True,
-            expected_cli_message="",
-        )
-        args_concatenated = "".join(
-            call.args[0] for call in mock_stderr.write.call_args_list if call.args
-        )
-        assert args_concatenated == ""
+    mock_stderr = mocker.patch("sys.stderr")
+    assert_file_replace(
+        cli_input_paths=[binary_file_path],
+        input_filenames=[],
+        output_filenames=[],
+        rule_filenames=["rules/ruff.md"],
+        dry_run=True,
+        quiet=True,
+        expected_cli_message="",
+    )
+    args_concatenated = "".join(
+        call.args[0] for call in mock_stderr.write.call_args_list if call.args
+    )
+    assert args_concatenated == ""
 
 
-@patch("mlr.__main__.Console", FakeConsole)
-def test_directory_skip_quiet() -> None:
+def test_directory_skip_quiet(mocker: MockerFixture) -> None:
     """
     Should skip directories silently when quiet mode is enabled.
     """
+    mocker.patch("mlr.__main__.Console", FakeConsole)
     directory_path = get_fixture_path("some_dir_quiet")
     directory_path.mkdir(parents=True, exist_ok=True)
 
-    with patch("sys.stderr") as mock_stderr:
-        assert_file_replace(
-            cli_input_paths=[directory_path],
-            input_filenames=[],
-            output_filenames=[],
-            rule_filenames=["rules/ruff.md"],
-            dry_run=True,
-            quiet=True,
-            expected_cli_message="",
-        )
-        args_concatenated = "".join(
-            call.args[0] for call in mock_stderr.write.call_args_list if call.args
-        )
-        assert args_concatenated == ""
+    mock_stderr = mocker.patch("sys.stderr")
+    assert_file_replace(
+        cli_input_paths=[directory_path],
+        input_filenames=[],
+        output_filenames=[],
+        rule_filenames=["rules/ruff.md"],
+        dry_run=True,
+        quiet=True,
+        expected_cli_message="",
+    )
+    args_concatenated = "".join(
+        call.args[0] for call in mock_stderr.write.call_args_list if call.args
+    )
+    assert args_concatenated == ""
