@@ -26,8 +26,11 @@ changelog = "https://github.com/caleb531/multi-line-replacer/releases"
 mlr = "mlr.__main__:main"
 multi-line-replacer = "mlr.__main__:main"
 
+[tool.uv]
+required-version = ">=0.13.5,<0.14"
+
 [build-system]
-requires = ["uv_build>=0.11.24,<0.12"]
+requires = ["uv_build>=0.13.5,<0.14"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
