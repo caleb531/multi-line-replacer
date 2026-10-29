@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import contextlib
-from typing import Generator, Union
+from typing import Iterator, Union
 
 from pytest_mock import MockerFixture
 from rich.syntax import Syntax
@@ -18,8 +18,7 @@ class FakeConsole:
     is_terminal = True
 
     @contextlib.contextmanager
-    def pager(self, styles: bool = True) -> Generator[None, None, None]:
-        """Run the pager context without opening an external pager."""
+    def pager(self, styles: bool = True) -> Iterator[None]:
         yield
 
     def print(self, obj: Union[Text, Syntax, str], **kwargs: object) -> None:
